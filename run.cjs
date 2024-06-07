@@ -8,3 +8,8 @@ const proc = exec(`cross-env HOST=${config.host || 'localhost'} PORT=${config.po
 proc.stdout.on( 'data', ( data ) => {
     stdout.write( data )
 })
+
+proc.stderr.on( 'data', ( err ) => {
+    stdout.write( 'ERROR: ' )
+    stdout.write( err )
+})
