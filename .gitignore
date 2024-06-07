@@ -1,6 +1,11 @@
 node_modules
 
 /.cache
-/build
-/public/build
+/app
+.eslintrc.json
+postcss.config.cjs
+remix.config.ts
+remix.env.d.ts
+tsconfig.json
+yarn.lock
 .env

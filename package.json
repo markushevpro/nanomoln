@@ -3,14 +3,9 @@
   "private": true,
   "sideEffects": false,
   "type": "module",
-  "version": "0.1.4",
+  "version": "0.1.0",
   "scripts": {
-    "build": "remix build",
-    "dev": "remix dev --manual",
-    "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
-    "start": "node ./run.cjs",
-    "typecheck": "tsc",
-    "test": "yarn lint --fix && yarn typecheck"
+    "start": "node ./run.cjs"
   },
   "dependencies": {
     "@mantine/core": "^7.6.2",
@@ -33,17 +28,6 @@
     "react-dom": "^18.2.0",
     "react-top-loading-bar": "^2.3.1",
     "zustand": "^4.5.2"
-  },
-  "devDependencies": {
-    "@markushevpro/eslint-config": "^2.0.15",
-    "@remix-run/dev": "^2.6.0",
-    "@types/react": "^18.2.20",
-    "@types/react-dom": "^18.2.7",
-    "eslint": "^8.38.0",
-    "postcss": "^8.4.35",
-    "postcss-preset-mantine": "^1.13.0",
-    "postcss-simple-vars": "^7.0.1",
-    "typescript": "^5.1.6"
   },
   "engines": {
     "node": ">=18.0.0"
