@@ -12,7 +12,7 @@ const rl = readline.createInterface({
 
 rl.write( 'Welcome to Nanomoln installation\n' )
 
-rl.question( `Please provide public ip or host name (default: "${config.host}"):`, async ( host ) => {
+rl.question( `Please provide local IP or public host (default: "${config.host}"):`, async ( host ) => {
     config.host = host || config.host
     
     await rl.question( `Port to run on (default: "${config.port}"):`, async ( port ) => {

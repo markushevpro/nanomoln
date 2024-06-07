@@ -41,7 +41,7 @@ npm start
 
 ### config.json
 
-- **host** - public host IP or domain. *(Default: 127.0.0.1)*
+- **host** - local IP or public host. *(Default: 127.0.0.1)*
 - **port** - custom port to run on. *(Default: 3000)*
 - **paths** - list of folders to be manipulated. *(Should be filled before start, default empty)*
 - **accept** - list of MIME-types, allowed to be uploaded *(No wildcards for now, default: ["audio/mpeg"])*
