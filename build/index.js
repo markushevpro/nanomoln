@@ -460,7 +460,7 @@ __export(file_module_exports, {
 });
 import fs3 from "fs";
 function getName(filename) {
-  return filename.split("\\").pop() ?? filename;
+  return filename.replace(/[\\]+/g, "/").split("/").pop() ?? filename;
 }
 function read2(filename) {
   return fs3.readFileSync(resolve(process.cwd(), filename), "utf8");
