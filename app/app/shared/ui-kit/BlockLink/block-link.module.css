@@ -1,0 +1,23 @@
+.link {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    flex: 1 1 100%;
+}
+
+.link:where([data-underline="hover"]):hover {
+    text-decoration: none;
+}
+
+.link:where([data-underline="hover"]) > span {    
+    background: linear-gradient(to right, currentColor, currentColor);
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    transition: background-size .15s ease-in-out;
+}
+
+.link:where([data-underline="hover"]):hover > span {
+    background-size: 100% 1px;;
+}

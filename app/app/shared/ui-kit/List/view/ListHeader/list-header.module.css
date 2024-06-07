@@ -1,0 +1,22 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    height: 20px;
+    margin-right: -5px;
+}
+
+.selected {
+    font-size: 12px;
+    font-weight: normal;
+    padding-left: var(--mantine-spacing-sm);
+}
+
+.actions {
+    margin-left: auto;
+}
+
+.actions :global(.mantine-ActionIcon-root) {
+    margin: -2px 0;
+}

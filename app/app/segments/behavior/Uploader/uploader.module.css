@@ -1,0 +1,19 @@
+.root {
+    background-color: transparent;
+}
+
+.root [data-accept],
+.root [data-reject],
+.root [data-loading]
+{
+        opacity: 0.5 !important;
+}
+
+.root :global(.mantine-Dropzone-inner) {
+    height: 100%;
+    flex: 1 1 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

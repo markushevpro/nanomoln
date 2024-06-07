@@ -1,0 +1,36 @@
+.container {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    margin-left: 1em;
+    padding-right: var(--mantine-spacing-lg);
+}
+
+.container > li {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    margin-left: 1em;
+}
+
+.prefix,
+.postfix {
+    font-size: .9em;
+    line-height: 1;
+    transform: translateY(.1em);
+}
+
+.prefix {
+    margin-right: .25em;
+}
+
+.postfix {
+    margin-left: .25em;
+}

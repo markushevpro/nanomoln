@@ -1,0 +1,44 @@
+.faded {
+    color: var(--mantine-color-primary-5);
+}
+
+.link {
+    margin-top: calc(-1 * var(--table-vertical-spacing));
+    margin-bottom: calc(-1 * var(--table-vertical-spacing));
+    padding-top: var(--table-vertical-spacing);
+    padding-bottom: var(--table-vertical-spacing);
+}
+
+tr:hover .hideOnHover {
+    display: none;
+}
+
+.showOnHover {
+    display: none;
+}
+
+tr:hover .showOnHover {
+    display: table-cell;
+}
+
+.pullRight {
+    text-align: right;
+}
+
+.actions {
+    margin: -4px -6px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.icon {
+    width: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.fixed {
+    width: 40px;
+}

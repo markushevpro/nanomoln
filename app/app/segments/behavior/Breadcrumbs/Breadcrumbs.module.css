@@ -1,0 +1,7 @@
+.separator {
+    color: var(--mantine-color-primary-5);
+}
+
+.breadcrumb {
+    color: var(--mantine-color-primary-1);
+}

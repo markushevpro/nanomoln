@@ -1,0 +1,12 @@
+.drag {
+    opacity: 0.5
+}
+
+.drop {
+    box-shadow: inset 0px 0px 5px var(--mantine-color-primary-5);
+}
+
+.locked {
+    opacity: 0.5;
+    pointer-events: none;
+}

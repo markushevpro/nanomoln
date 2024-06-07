@@ -1,0 +1,28 @@
+{
+    "extends": [
+        "@markushevpro/eslint-config"
+    ],
+    "rules": {
+        "react/jsx-one-expression-per-line": [0],
+        "@typescript-eslint/triple-slash-reference": [0]
+    },
+    "ignorePatterns": [
+        "*.cjs"
+    ],
+    "overrides": [
+        {
+            "files": [ "app/root.tsx"],
+            "rules": {
+                "@typescript-eslint/explicit-function-return-type": [0],                
+                "import/no-default-export": [0]
+            }
+        },
+        {
+            "files": [ "app/routes/**/*" ],
+            "rules": {
+                "import/no-default-export": [0]
+            }
+        }
+    ]
+}
+    
