@@ -473,9 +473,11 @@ async function rename(path, original, update) {
 }
 async function move(files2, target) {
   await new Promise((resolve2) => {
-    fs3.existsSync(target) && files2.forEach((file) => {
-      file !== target && getDir(file) !== target && fs3.existsSync(file) && fs3.renameSync(file, resolve(target, getName(file)));
-    }), resolve2();
+    fs3.existsSync(target) ? files2.forEach((file) => {
+      file !== target && getDir(file) !== target && fs3.existsSync(file) ? fs3.rename(file, resolve(target, getName(file)), (err) => {
+        err && console.error("Move error", err);
+      }) : console.error(`Error moving file: ${file}`);
+    }) : console.error(`Path not found: ${target}`), resolve2();
   });
 }
 async function remove(list) {
