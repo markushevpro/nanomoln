@@ -28,7 +28,7 @@ Installation script will automatically install nvm, Node.js 18 (if not installed
 Run following command in *parent* directory, new directory "nanomoln" will be created there.
 
 ```sh
-curl -lS 'https://raw.githubusercontent.com/markushevpro/nanomoln/release/install.sh' > nanomoln-install.sh && \. nanomoln-install.sh
+curl -sL 'https://raw.githubusercontent.com/markushevpro/nanomoln/release/install.sh' > nanomoln-install.sh && \. nanomoln-install.sh
 ```
 
 ## Running
