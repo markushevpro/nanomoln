@@ -8,7 +8,7 @@ export
 function getName
 ( filename: string ): string
 {
-    return filename.split( '\\' ).pop() ?? filename
+    return filename.replace( /[\\]+/g, '/' ).split( '/' ).pop() ?? filename
 }
 
 export
