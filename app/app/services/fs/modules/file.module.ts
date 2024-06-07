@@ -44,9 +44,17 @@ async function move
         if ( fs.existsSync( target )) {
             files.forEach( file => {
                 if ( file !== target && path.getDir( file ) !== target && fs.existsSync( file )) {
-                    fs.renameSync( file, path.resolve( target, getName( file )))
+                    fs.rename( file, path.resolve( target, getName( file )), ( err ) => {
+                        if ( err ) {
+                            console.error( 'Move error', err )
+                        }
+                    })
+                } else {
+                    console.error( `Error moving file: ${file}` )
                 }
             })
+        } else {
+            console.error( `Path not found: ${target}`)
         }
 
         resolve()
