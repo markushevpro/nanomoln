@@ -23,10 +23,12 @@ Written in Remix (Node.js, React) & Typescript.
 
 ## Installation
 
-Installation script will automatically install nvm, Node.js 18 (if not installed) and Nanomoln.
+Installation script will automatically install nvm, Node.js 18 (if not installed) and Nanomoln. 
+
+Run following command in *parent* directory, new directory "nanomoln" will be created there.
 
 ```sh
-curl -lS 'http://{github_link}/release/install.sh' > nanomoln-install.sh && \. nanomoln-install.sh
+curl -lS 'https://raw.githubusercontent.com/markushevpro/nanomoln/release/install.sh' > nanomoln-install.sh && \. nanomoln-install.sh
 ```
 
 ## Running

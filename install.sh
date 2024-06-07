@@ -54,7 +54,7 @@ fi
 
 # Install Nanomoln
 
-curl -lS http://{github_link}.tar.gz | tar zx
+curl -lS "https://github.com/markushevpro/nanomoln/archive/refs/tags/0.1.0.tar.gz" | tar zx
 cd nanomoln && npm install --loglevel verbose
 
 # Create config
