@@ -61,7 +61,7 @@ fi
 curl -sL "https://github.com/markushevpro/nanomoln/archive/refs/tags/$NANOMOLN_VERSION.tar.gz" | tar zx
 rm -rf ./nanomoln
 mv nanomoln-$NANOMOLN_VERSION nanomoln
-cd nanomoln-$NANOMOLN_VERSION && npm install --loglevel verbose
+cd nanomoln && npm install --loglevel verbose
 
 # Create config
 
