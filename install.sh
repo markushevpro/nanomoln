@@ -5,6 +5,10 @@
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
+# Current version
+
+NANOMOLN_VERSION="0.1.0"
+
 # Define helpers
 
 install_nvm(){
@@ -54,8 +58,10 @@ fi
 
 # Install Nanomoln
 
-curl -lS "https://github.com/markushevpro/nanomoln/archive/refs/tags/0.1.0.tar.gz" | tar zx
-cd nanomoln && npm install --loglevel verbose
+curl -sL "https://github.com/markushevpro/nanomoln/archive/refs/tags/$NANOMOLN_VERSION.tar.gz" | tar zx
+rm -rf ./nanomoln
+mv nanomoln-$NANOMOLN_VERSION nanomoln
+cd nanomoln-$NANOMOLN_VERSION && npm install --loglevel verbose
 
 # Create config
 
