@@ -108,7 +108,7 @@ __export(root_exports, {
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 
 // css-bundle-plugin-ns:@remix-run/css-bundle
-var cssBundleHref = "/build/css-bundle-5NYK5P53.css";
+var cssBundleHref = "/build/css-bundle-IAQLS5I7.css";
 
 // app/root.tsx
 import {
@@ -156,6 +156,11 @@ var useConfirmationPopup = create(
 
 // app/app/shared/popups/Confirmation/view.tsx
 import { Group, Modal } from "@mantine/core";
+
+// app/app/shared/popups/Confirmation/confirmaton-popup.module.css
+var confirmaton_popup_module_default = { content: "U58JN" };
+
+// app/app/shared/popups/Confirmation/view.tsx
 import { jsx as jsx2, jsxs } from "react/jsx-runtime";
 function ConfirmationPopup() {
   let { visible, title, text, buttons, hide } = useConfirmationPopup();
@@ -167,7 +172,7 @@ function ConfirmationPopup() {
       title,
       onClose: hide,
       children: [
-        /* @__PURE__ */ jsx2("div", { children: text }),
+        /* @__PURE__ */ jsx2("div", { className: confirmaton_popup_module_default.content, children: text }),
         /* @__PURE__ */ jsx2(Group, { mt: "xl", children: buttons })
       ]
     }
@@ -1832,7 +1837,7 @@ import { useEffect as useEffect5, useState as useState7 } from "react";
 
 // app/app/segments/behavior/Uploader/index.tsx
 import { Dropzone } from "@mantine/dropzone";
-import { useContext, useRef as useRef2 } from "react";
+import { useContext as useContext2, useRef as useRef2 } from "react";
 
 // app/app/services/config/context.tsx
 import { createContext } from "react";
@@ -1895,40 +1900,115 @@ function UploadIcon({ onClick }) {
 }
 
 // app/app/segments/behavior/Uploader/hooks/useSmartUpload.ts
-import { useCallback as useCallback13, useMemo as useMemo10 } from "react";
+import { useCallback as useCallback14, useContext, useMemo as useMemo11 } from "react";
 
 // app/app/segments/behavior/Uploader/helpers.ts
 function getFilesIntersection(upload2, check) {
   return upload2.filter((f) => check.find((cf) => cf.filename === f.name));
 }
 
-// app/app/segments/behavior/Uploader/hooks/useOverwriteConfirmation.tsx
-import { Button as Button2 } from "@mantine/core";
+// app/app/segments/behavior/Uploader/hooks/useOverweightConfirmation.tsx
+import { Button as Button2, Divider } from "@mantine/core";
+import { filesize as filesize2 } from "filesize";
 import { useCallback as useCallback12, useMemo as useMemo9 } from "react";
 import { Fragment as Fragment11, jsx as jsx49, jsxs as jsxs16 } from "react/jsx-runtime";
-function OverwriteContent({ intersection }) {
+function OverweightContent({ overweight, other, max }) {
   return /* @__PURE__ */ jsxs16(Fragment11, { children: [
-    /* @__PURE__ */ jsx49("p", { children: "This files will be overwritten:" }),
-    /* @__PURE__ */ jsx49("ul", { children: intersection.map((file) => /* @__PURE__ */ jsx49("li", { children: file.name }, file.name)) })
+    overweight.length > 1 ? /* @__PURE__ */ jsxs16("p", { children: [
+      "You have ",
+      overweight.length,
+      " file(s) that are too big (up to ",
+      filesize2(max),
+      ")."
+    ] }) : /* @__PURE__ */ jsxs16("p", { children: [
+      "This file is too big (",
+      filesize2(overweight[0].size),
+      ")."
+    ] }),
+    other && other.length > 0 && /* @__PURE__ */ jsxs16("p", { children: [
+      "You can upload the remaining ",
+      other.length,
+      " file(s) or cancel upload."
+    ] }),
+    /* @__PURE__ */ jsx49(Divider, {}),
+    /* @__PURE__ */ jsx49("p", { children: /* @__PURE__ */ jsx49("i", { children: /* @__PURE__ */ jsx49("small", { children: 'If you want to upload big files, please update "maxsize" value in your config.json and restart nanomoln.' }) }) })
+  ] });
+}
+function OverweightButtons({ other, onUpload }) {
+  let { hide } = useConfirmationPopup();
+  return /* @__PURE__ */ jsxs16(Fragment11, { children: [
+    /* @__PURE__ */ jsx49(Button2, { style: other && other.length > 0 ? { marginRight: "auto" } : {}, variant: "subtle", onClick: hide, children: "Cancel upload" }),
+    other && other.length > 0 && /* @__PURE__ */ jsxs16(Button2, { onClick: onUpload, children: [
+      "Upload ",
+      other.length,
+      " files"
+    ] })
+  ] });
+}
+function useOverweightConfirmation() {
+  let { show, hide } = useConfirmationPopup(), confirm = useCallback12(
+    (overweight, other, max, onUpload) => {
+      overweight && overweight.length > 0 ? show(
+        "Allowed upload size exceeded",
+        /* @__PURE__ */ jsx49(OverweightContent, { max, other, overweight }),
+        /* @__PURE__ */ jsx49(OverweightButtons, { other, onUpload })
+      ) : console.error("Trying to show empty overweight confirmation");
+    },
+    [show]
+  );
+  return useMemo9(
+    () => ({
+      confirm,
+      hide
+    }),
+    [confirm, hide]
+  );
+}
+
+// app/app/segments/behavior/Uploader/hooks/useOverwriteConfirmation.tsx
+import { Button as Button3 } from "@mantine/core";
+import { useCallback as useCallback13, useMemo as useMemo10 } from "react";
+
+// app/app/segments/behavior/Uploader/hooks/upload-list.module.css
+var upload_list_module_default = { list: "P7AHk", item: "y9DC4", wrapper: "etJE2" };
+
+// app/app/segments/behavior/Uploader/hooks/useOverwriteConfirmation.tsx
+import { Fragment as Fragment12, jsx as jsx50, jsxs as jsxs17 } from "react/jsx-runtime";
+var maxFilesShowing = 10;
+function OverwriteContent({ intersection }) {
+  let cut = intersection.length > maxFilesShowing ? intersection.slice(0, maxFilesShowing) : intersection;
+  return /* @__PURE__ */ jsxs17(Fragment12, { children: [
+    /* @__PURE__ */ jsx50("p", { children: "This files will be overwritten:" }),
+    /* @__PURE__ */ jsx50("ul", { className: upload_list_module_default.list, children: cut.map(
+      (file) => /* @__PURE__ */ jsx50("li", { className: upload_list_module_default.item, title: file.name, children: /* @__PURE__ */ jsx50("span", { className: upload_list_module_default.wrapper, children: file.name }) }, file.name)
+    ) }),
+    cut.length < intersection.length && /* @__PURE__ */ jsx50("p", { children: /* @__PURE__ */ jsxs17("strong", { children: [
+      "And ",
+      intersection.length - cut.length,
+      " more"
+    ] }) })
   ] });
 }
 function OverwriteButtons({ intersection, onOverwrite, onIgnore }) {
   let { hide } = useConfirmationPopup();
-  return /* @__PURE__ */ jsxs16(Fragment11, { children: [
-    /* @__PURE__ */ jsx49(Button2, { style: { marginRight: "auto" }, variant: "subtle", onClick: hide, children: "Cancel upload" }),
-    /* @__PURE__ */ jsx49(Button2, { color: "red", onClick: onOverwrite, children: intersection.length > 1 ? "Overwrite all" : "Overwrite" }),
-    intersection.length > 1 && /* @__PURE__ */ jsx49(Button2, { onClick: onIgnore, children: "Ignore exist" })
+  return /* @__PURE__ */ jsxs17(Fragment12, { children: [
+    /* @__PURE__ */ jsx50(Button3, { style: { marginRight: "auto" }, variant: "subtle", onClick: hide, children: "Cancel upload" }),
+    /* @__PURE__ */ jsx50(Button3, { color: "red", onClick: onOverwrite, children: intersection.length > 1 ? "Overwrite all" : "Overwrite" }),
+    intersection.length > 1 && /* @__PURE__ */ jsx50(Button3, { onClick: onIgnore, children: "Ignore exist" })
   ] });
 }
 function useOverwriteConfirmation() {
-  let { show, hide } = useConfirmationPopup(), confirm = useCallback12((intersection, onOverwrite, onIgnore) => {
-    intersection && intersection.length > 0 ? show(
-      "Files already exist",
-      /* @__PURE__ */ jsx49(OverwriteContent, { intersection }),
-      /* @__PURE__ */ jsx49(OverwriteButtons, { intersection, onIgnore, onOverwrite })
-    ) : console.error("Trying to show empty overwrite confirmation");
-  }, [show]);
-  return useMemo9(
+  let { show, hide } = useConfirmationPopup(), confirm = useCallback13(
+    (intersection, onOverwrite, onIgnore) => {
+      intersection && intersection.length > 0 ? show(
+        "Files already exist",
+        /* @__PURE__ */ jsx50(OverwriteContent, { intersection }),
+        /* @__PURE__ */ jsx50(OverwriteButtons, { intersection, onIgnore, onOverwrite })
+      ) : console.error("Trying to show empty overwrite confirmation");
+    },
+    [show]
+  );
+  return useMemo10(
     () => ({
       confirm,
       hide
@@ -1939,50 +2019,65 @@ function useOverwriteConfirmation() {
 
 // app/app/segments/behavior/Uploader/hooks/useSmartUpload.ts
 function useSmartUpload() {
-  let { data: folder } = useFolder(), { upload: upload2 } = useFilesHandlers(), { confirm, hide } = useOverwriteConfirmation(), uploadAll = useCallback13(
+  let config = useContext(ConfigContext), { data: folder } = useFolder(), { upload: upload2 } = useFilesHandlers(), { confirm: confirmOverwrite, hide: hideOverwrite } = useOverwriteConfirmation(), { confirm: confirmOverweight } = useOverweightConfirmation(), uploadAll = useCallback14(
     (files2) => () => {
-      upload2(files2, folder?.path ?? ""), hide();
+      upload2(files2, folder?.path ?? ""), hideOverwrite();
     },
-    [folder, hide, upload2]
-  ), uploadNonExist = useCallback13(
+    [folder, hideOverwrite, upload2]
+  ), uploadNonExist = useCallback14(
     (files2, intersection) => () => {
       let clean = files2.filter((f) => !intersection.includes(f));
-      clean.length > 0 && upload2(clean, folder?.path ?? ""), hide();
+      clean.length > 0 && upload2(clean, folder?.path ?? ""), hideOverwrite();
     },
-    [folder, upload2, hide]
-  ), confirmUpload = useCallback13(
+    [folder, upload2, hideOverwrite]
+  ), confirmUpload = useCallback14(
     (files2, intersection) => {
-      confirm(
+      confirmOverwrite(
         intersection,
         uploadAll(files2),
         uploadNonExist(files2, intersection)
       );
     },
-    [confirm, uploadAll, uploadNonExist]
-  ), checkOverwrite = useCallback13(
+    [confirmOverwrite, uploadAll, uploadNonExist]
+  ), checkOverwrite = useCallback14(
     (files2) => {
       let intersect = getFilesIntersection(files2, folder?.files ?? []);
       intersect.length > 0 ? confirmUpload(files2, intersect) : upload2(files2, folder?.path ?? "");
     },
     [confirmUpload, upload2, folder]
-  ), handleUpload = useCallback13(
-    (files2) => {
-      folder?.path && checkOverwrite(files2);
+  ), checkSizes = useCallback14(
+    (files2, success) => {
+      let overweight = files2.filter((f) => f.size > (config?.maxsize ?? 1e7)), filtered = files2.filter((f) => !overweight.includes(f)), max = overweight.reduce((m, f) => Math.max(m, f.size), -1 / 0);
+      overweight.length > 0 ? confirmOverweight(
+        overweight,
+        filtered,
+        max,
+        () => {
+          success(filtered);
+        }
+      ) : success(filtered);
     },
-    [folder, checkOverwrite]
+    []
+  ), handleUpload = useCallback14(
+    (files2) => {
+      folder?.path && checkSizes(files2, (filtered) => {
+        checkOverwrite(filtered);
+      });
+    },
+    [folder, checkSizes, checkOverwrite]
   );
-  return useMemo10(() => ({ upload: handleUpload }), [handleUpload]);
+  return useMemo11(() => ({ upload: handleUpload }), [handleUpload]);
 }
 
 // app/app/segments/behavior/Uploader/uploader.module.css
 var uploader_module_default = { root: "cr9-2" };
 
 // app/app/segments/behavior/Uploader/index.tsx
-import { Fragment as Fragment12, jsx as jsx50, jsxs as jsxs17 } from "react/jsx-runtime";
+import { Fragment as Fragment13, jsx as jsx51, jsxs as jsxs18 } from "react/jsx-runtime";
 function Uploader() {
-  let openRef = useRef2(null), { accept } = useContext(ConfigContext) ?? { accept: ["*"] }, { upload: upload2 } = useSmartUpload();
-  return /* @__PURE__ */ jsxs17(Fragment12, { children: [
-    /* @__PURE__ */ jsxs17(
+  let openRef = useRef2(null), { accept } = useContext2(ConfigContext) ?? { accept: ["*"] }, { upload: upload2 } = useSmartUpload();
+  return /* @__PURE__ */ jsxs18(Fragment13, { children: [
+    /* @__PURE__ */ jsxs18(
       Dropzone.FullScreen,
       {
         active: !0,
@@ -1991,36 +2086,36 @@ function Uploader() {
         openRef,
         onDrop: upload2,
         children: [
-          /* @__PURE__ */ jsx50(Dropzone.Accept, { children: /* @__PURE__ */ jsx50(AcceptContent, {}) }),
-          /* @__PURE__ */ jsx50(Dropzone.Reject, { children: /* @__PURE__ */ jsx50(RejectContent, {}) })
+          /* @__PURE__ */ jsx51(Dropzone.Accept, { children: /* @__PURE__ */ jsx51(AcceptContent, {}) }),
+          /* @__PURE__ */ jsx51(Dropzone.Reject, { children: /* @__PURE__ */ jsx51(RejectContent, {}) })
         ]
       }
     ),
-    /* @__PURE__ */ jsx50(UploadIcon, { onClick: () => openRef.current?.() })
+    /* @__PURE__ */ jsx51(UploadIcon, { onClick: () => openRef.current?.() })
   ] });
 }
 
 // app/app/segments/behavior/FolderActions/index.tsx
-import { Fragment as Fragment13, jsx as jsx51, jsxs as jsxs18 } from "react/jsx-runtime";
+import { Fragment as Fragment14, jsx as jsx52, jsxs as jsxs19 } from "react/jsx-runtime";
 function FolderActions() {
   let { data, create: create5 } = useFolder(), [visible, $visible] = useState7(!1);
   return useEffect5(() => {
     $visible(!0);
-  }, []), !visible || !data ? null : /* @__PURE__ */ jsxs18(Fragment13, { children: [
-    /* @__PURE__ */ jsx51(Uploader, {}),
-    /* @__PURE__ */ jsx51(ActionIcon5, { c: "primary.0", size: "lg", onClick: create5, children: /* @__PURE__ */ jsx51(IconFolderFilled3, { size: "20" }) })
+  }, []), !visible || !data ? null : /* @__PURE__ */ jsxs19(Fragment14, { children: [
+    /* @__PURE__ */ jsx52(Uploader, {}),
+    /* @__PURE__ */ jsx52(ActionIcon5, { c: "primary.0", size: "lg", onClick: create5, children: /* @__PURE__ */ jsx52(IconFolderFilled3, { size: "20" }) })
   ] });
 }
 
 // app/app/flows/Main/index.tsx
-import { jsx as jsx52 } from "react/jsx-runtime";
+import { jsx as jsx53 } from "react/jsx-runtime";
 function MainFlow() {
   let { data } = useFolder();
-  return /* @__PURE__ */ jsx52(
+  return /* @__PURE__ */ jsx53(
     PageLayout,
     {
-      headerActions: /* @__PURE__ */ jsx52(FolderActions, {}),
-      children: data ? /* @__PURE__ */ jsx52(ViewFilesFlow, {}) : /* @__PURE__ */ jsx52(PathListScreen, {})
+      headerActions: /* @__PURE__ */ jsx53(FolderActions, {}),
+      children: data ? /* @__PURE__ */ jsx53(ViewFilesFlow, {}) : /* @__PURE__ */ jsx53(PathListScreen, {})
     }
   );
 }
@@ -2038,12 +2133,12 @@ function meta() {
 
 // app/app/entrypoints/Folder/hooks.ts
 import { useLoaderData } from "@remix-run/react";
-import { useEffect as useEffect6, useMemo as useMemo11 } from "react";
+import { useEffect as useEffect6, useMemo as useMemo12 } from "react";
 function useFolderData() {
   let { data, config } = useLoaderData(), { force } = useFilesStoreActions();
   return useEffect6(() => {
     force(data);
-  }, [data, force]), useMemo11(
+  }, [data, force]), useMemo12(
     () => ({
       config,
       loaded: !!(data.paths && data.top)
@@ -2100,10 +2195,10 @@ async function loader2({ params }) {
 }
 
 // app/app/entrypoints/Folder/index.tsx
-import { jsx as jsx53 } from "react/jsx-runtime";
+import { jsx as jsx54 } from "react/jsx-runtime";
 function FolderPage() {
   let { loaded, config } = useFolderData();
-  return loaded ? /* @__PURE__ */ jsx53(ConfigProvider, { value: config, children: /* @__PURE__ */ jsx53(MainFlow, {}) }) : null;
+  return loaded ? /* @__PURE__ */ jsx54(ConfigProvider, { value: config, children: /* @__PURE__ */ jsx54(MainFlow, {}) }) : null;
 }
 
 // app/routes/view.$path.$/route.ts
@@ -2119,12 +2214,12 @@ __export(route_exports3, {
 
 // app/app/entrypoints/Home/hooks.ts
 import { useLoaderData as useLoaderData2 } from "@remix-run/react";
-import { useEffect as useEffect7, useMemo as useMemo12 } from "react";
+import { useEffect as useEffect7, useMemo as useMemo13 } from "react";
 function useInitialData() {
   let { data, config } = useLoaderData2(), { force } = useFilesStoreActions();
   return useEffect7(() => {
     force(data);
-  }, [data, force]), useMemo12(() => ({ config }), [config]);
+  }, [data, force]), useMemo13(() => ({ config }), [config]);
 }
 
 // app/app/entrypoints/Home/loader.ts
@@ -2135,10 +2230,10 @@ async function loader3() {
 }
 
 // app/app/entrypoints/Home/index.tsx
-import { jsx as jsx54 } from "react/jsx-runtime";
+import { jsx as jsx55 } from "react/jsx-runtime";
 function HomePage() {
   let { config } = useInitialData();
-  return /* @__PURE__ */ jsx54(ConfigProvider, { value: config, children: /* @__PURE__ */ jsx54(MainFlow, {}) });
+  return /* @__PURE__ */ jsx55(ConfigProvider, { value: config, children: /* @__PURE__ */ jsx55(MainFlow, {}) });
 }
 
 // app/routes/_index/route.ts
@@ -2196,7 +2291,7 @@ function rename2(payload) {
 // app/app/services/server/folder/handlers/upload.ts
 import { unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from "@remix-run/node";
 async function upload(request, query) {
-  let target = query.get("target") ?? void 0, uploadHandler = unstable_composeUploadHandlers(
+  let target = query.get("target") ?? void 0, { maxsize } = configService.get() ?? 1e7, uploadHandler = unstable_composeUploadHandlers(
     async ({ name, contentType, data, filename }) => {
       if (name === "file") {
         if (!configService.allow(contentType))
@@ -2204,8 +2299,7 @@ async function upload(request, query) {
         await unstable_createFileUploadHandler({
           directory: target,
           avoidFileConflicts: !1,
-          // TODO: Move to config
-          maxPartSize: 1e7,
+          maxPartSize: maxsize,
           file: ({ filename: filename2 }) => filename2
         })({
           name,
@@ -2267,7 +2361,7 @@ async function action({ request }) {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-S4TGLKH7.js", imports: ["/build/_shared/chunk-ELF33S6B.js", "/build/_shared/chunk-T36URGAI.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-COOH246W.js", imports: ["/build/_shared/chunk-FXL7N7GQ.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_index": { id: "routes/_index", parentId: "root", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_index-3FI74DDR.js", imports: ["/build/_shared/chunk-TUPB47RT.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/api.$": { id: "routes/api.$", parentId: "root", path: "api/*", index: void 0, caseSensitive: void 0, module: "/build/routes/api.$-Y4UUKNCU.js", imports: void 0, hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/api.download": { id: "routes/api.download", parentId: "root", path: "api/download", index: void 0, caseSensitive: void 0, module: "/build/routes/api.download-5ACXKL6V.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/view.$path.$": { id: "routes/view.$path.$", parentId: "root", path: "view/:path/*", index: void 0, caseSensitive: void 0, module: "/build/routes/view.$path.$-BCT4ERCC.js", imports: ["/build/_shared/chunk-TUPB47RT.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "e04ecdd3", hmr: void 0, url: "/build/manifest-E04ECDD3.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-S4TGLKH7.js", imports: ["/build/_shared/chunk-ELF33S6B.js", "/build/_shared/chunk-T36URGAI.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-57PAAZIP.js", imports: ["/build/_shared/chunk-LYSDDBWF.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_index": { id: "routes/_index", parentId: "root", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_index-UHPHIRJF.js", imports: ["/build/_shared/chunk-KO47Y67X.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/api.$": { id: "routes/api.$", parentId: "root", path: "api/*", index: void 0, caseSensitive: void 0, module: "/build/routes/api.$-Y4UUKNCU.js", imports: void 0, hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/api.download": { id: "routes/api.download", parentId: "root", path: "api/download", index: void 0, caseSensitive: void 0, module: "/build/routes/api.download-5ACXKL6V.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/view.$path.$": { id: "routes/view.$path.$", parentId: "root", path: "view/:path/*", index: void 0, caseSensitive: void 0, module: "/build/routes/view.$path.$-C46RFJ5J.js", imports: ["/build/_shared/chunk-KO47Y67X.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "627a51af", hmr: void 0, url: "/build/manifest-627A51AF.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var mode = "production", assetsBuildDirectory = "public\\build", future = { v3_fetcherPersist: !1, v3_relativeSplatPath: !1, v3_throwAbortReason: !1, unstable_singleFetch: !1 }, publicPath = "/build/", entry = { module: entry_server_node_exports }, routes = {

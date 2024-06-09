@@ -39,6 +39,12 @@ npm start
 
 ## Configuration
 
+You can automatically set or update config files with following command
+
+```sh
+npm run config
+```
+
 ### config.json
 
 - **host** - local IP or public host. *(Default: 127.0.0.1)*

@@ -7,7 +7,7 @@
 
 # Current version
 
-NANOMOLN_VERSION="0.1.0"
+NANOMOLN_VERSION="0.1.1"
 
 # Define helpers
 
@@ -59,12 +59,15 @@ fi
 # Install Nanomoln
 
 curl -sL "https://github.com/markushevpro/nanomoln/archive/refs/tags/$NANOMOLN_VERSION.tar.gz" | tar zx
+cp ./nanomoln/config.json ./nanomoln-config.json 2> /dev/null
 rm -rf ./nanomoln
 mv nanomoln-$NANOMOLN_VERSION nanomoln
+cp ./nanomoln-config.json ./nanomoln/config.json 2> /dev/null
+rm ./nanomoln-config.json
 cd nanomoln && npm install --loglevel verbose
 
 # Create config
 
-node ./install.cjs
+npm run config
 
 echo "Nanomoln installed. Successfully. To run Nanomoln type 'npm start'"
