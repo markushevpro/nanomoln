@@ -7,7 +7,7 @@
 
 # Current version
 
-NANOMOLN_VERSION="0.1.0"
+NANOMOLN_VERSION="0.1.1"
 
 # Define helpers
 
@@ -65,6 +65,6 @@ cd nanomoln && npm install --loglevel verbose
 
 # Create config
 
-node ./install.cjs
+node ./configure.cjs
 
 echo "Nanomoln installed. Successfully. To run Nanomoln type 'npm start'"

@@ -1,0 +1,17 @@
+.list {
+    padding: 0 0 24px 12px;
+    margin: 0 16px;
+}
+
+.item {
+    padding: 0;
+}
+
+.wrapper {
+    display: inline-block;
+    white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1;
+}

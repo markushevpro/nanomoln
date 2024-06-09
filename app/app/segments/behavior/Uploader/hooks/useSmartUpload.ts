@@ -7,7 +7,8 @@ import { useFolder }        from '~/services/folder/hooks/useFolder'
 
 import { getFilesIntersection } from '../helpers'
 
-import { useOverwriteConfirmation } from './useOverwriteConfirmation'
+import { useOverweightConfirmation } from './useOverweightConfirmation'
+import { useOverwriteConfirmation }  from './useOverwriteConfirmation'
 
 interface IUseSmartUploadResult
 {
@@ -18,16 +19,17 @@ export
 function useSmartUpload
 (): IUseSmartUploadResult
 {
-    const { data: folder }  = useFolder()
-    const { upload }        = useFilesHandlers()
-    const { confirm, hide } = useOverwriteConfirmation()
+    const { data: folder }                                   = useFolder()
+    const { upload }                                         = useFilesHandlers()
+    const { confirm: confirmOverwrite, hide: hideOverwrite } = useOverwriteConfirmation()
+    const { confirm: confirmOverweight }                     = useOverweightConfirmation()
 
     const uploadAll = useCallback(
         ( files: File[]) => () => {
             void upload( files, folder?.path ?? '' )
-            hide()
+            hideOverwrite()
         },
-        [ folder, hide, upload ]
+        [ folder, hideOverwrite, upload ]
     )
 
     const uploadNonExist = useCallback(
@@ -38,20 +40,20 @@ function useSmartUpload
                 void upload( clean, folder?.path ?? '' )
             }
 
-            hide()
+            hideOverwrite()
         },
-        [ folder, upload, hide ]
+        [ folder, upload, hideOverwrite ]
     )
 
     const confirmUpload = useCallback(
         ( files: FileWithPath[], intersection: File[]) => {
-            confirm(
+            confirmOverwrite(
                 intersection,
                 uploadAll( files ),
                 uploadNonExist( files, intersection )
             )
         },
-        [ confirm, uploadAll, uploadNonExist ]
+        [ confirmOverwrite, uploadAll, uploadNonExist ]
     )
 
     const checkOverwrite = useCallback(
@@ -65,13 +67,37 @@ function useSmartUpload
         [ confirmUpload, upload, folder ]
     )
 
+    const checkSizes = useCallback(
+        ( files: FileWithPath[], success: ( filtered: File[]) => void ) => {
+            const overweight = files.filter( f => f.size > 10_000_000 )
+            const filtered   = files.filter( f => !overweight.includes( f ))
+            const max        = overweight.reduce(( m, f ) => Math.max( m, f.size ), -Infinity )
+
+            if ( overweight.length > 0 ) {
+                confirmOverweight(
+                    overweight,
+                    filtered,
+                    max,
+                    () => {
+                        success( filtered )
+                    }
+                )
+            } else {
+                success( filtered )
+            }
+        },
+        []
+    )
+
     const handleUpload = useCallback(
         ( files: FileWithPath[]) => {
             if ( folder?.path ) {
-                checkOverwrite( files )
+                checkSizes( files, ( filtered: File[]) => {
+                    checkOverwrite( filtered )
+                })
             }
         },
-        [ folder, checkOverwrite ]
+        [ folder, checkSizes, checkOverwrite ]
     )
 
     return useMemo(() => ({ upload: handleUpload }), [ handleUpload ])

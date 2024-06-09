@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 
 import { Group, Modal } from '@mantine/core'
 
+import styles                   from './confirmaton-popup.module.css'
 import { useConfirmationPopup } from './store/store'
 
 export
@@ -17,7 +18,7 @@ function ConfirmationPopup
             title={title}
             onClose={hide}
         >
-            <div>
+            <div className={styles.content}>
                 { text }
             </div>
 

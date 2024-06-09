@@ -5,6 +5,10 @@ import { useCallback, useMemo } from 'react'
 
 import { useConfirmationPopup } from '~/shared/popups/Confirmation'
 
+import styles from './upload-list.module.css'
+
+const maxFilesShowing = 10
+
 interface IOverwritePayload
 {
     intersection: File[]
@@ -15,17 +19,29 @@ interface IOverwritePayload
 function OverwriteContent
 ({ intersection }: Pick<IOverwritePayload, 'intersection'> ): ReactNode
 {
+    const cut = intersection.length > maxFilesShowing ? intersection.slice( 0, maxFilesShowing ) : intersection
+
     return (
         <>
             <p>This files will be overwritten:</p>
 
-            <ul>
+            <ul className={styles.list}>
                 {
-                    intersection.map( file => (
-                        <li key={file.name}>{ file.name }</li>
+                    cut.map( file => (
+                        <li key={file.name} className={styles.item} title={file.name}>
+                            <span className={styles.wrapper}>
+                                { file.name }
+                            </span>
+                        </li>
                     ))
                 }
             </ul>
+
+            {
+                cut.length < intersection.length && (
+                    <p><strong>And {intersection.length - cut.length} more</strong></p>
+                )
+            }
         </>
     )
 }
@@ -72,17 +88,21 @@ function useOverwriteConfirmation
 {
     const { show, hide } = useConfirmationPopup()
 
-    const confirm = useCallback(( intersection: File[] | undefined, onOverwrite: () => void, onIgnore: () => void ) => {
-        if ( intersection && intersection.length > 0 ) {
-            show(
-                'Files already exist',
-                <OverwriteContent intersection={intersection} />,
-                <OverwriteButtons intersection={intersection} onIgnore={onIgnore} onOverwrite={onOverwrite} />
-            )
-        } else {
-            console.error( 'Trying to show empty overwrite confirmation' )
-        }
-    }, [ show ])
+    const confirm = useCallback(
+        ( intersection: File[] | undefined, onOverwrite: () => void, onIgnore: () => void ) =>
+        {
+            if ( intersection && intersection.length > 0 ) {
+                show(
+                    'Files already exist',
+                    <OverwriteContent intersection={intersection} />,
+                    <OverwriteButtons intersection={intersection} onIgnore={onIgnore} onOverwrite={onOverwrite} />
+                )
+            } else {
+                console.error( 'Trying to show empty overwrite confirmation' )
+            }
+        },
+        [ show ]
+    )
 
     return useMemo(
         () => ({
