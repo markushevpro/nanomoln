@@ -1,0 +1,2 @@
+export
+const DEFAULT_MAX_SIZE = 10_000_000

@@ -68,6 +68,6 @@ cd nanomoln && npm install --loglevel verbose
 
 # Create config
 
-node ./configure.cjs
+npm run config
 
 echo "Nanomoln installed. Successfully. To run Nanomoln type 'npm start'"

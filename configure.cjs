@@ -12,6 +12,7 @@ const rl = readline.createInterface({
 
 rl.write( 'Welcome to Nanomoln installation\n' )
 
+// TODO: Refactor more readable
 rl.question( `Please provide local IP or public host (default: "${config.host}"):`, async ( host ) => {
     config.host = host || config.host
     
@@ -21,23 +22,27 @@ rl.question( `Please provide local IP or public host (default: "${config.host}")
         await rl.question( `Which MIME type you want to accept? (default: "${config.accept.join( ', ' )}):`, async ( accept ) => {
             config.accept = accept ? accept.split( ',' ) : config.accept
 
-            rl.write( `Your local folder to manipulate (one per line, empty is exit):\n`)
-        
-            const paths = []
+            await rl.question( `Maximum allowed file size for upload? (default: "${config.maxsize}):`, async ( maxsize ) => {
+                config.maxsize = maxsize
+
+                rl.write( `Your local folder to manipulate (one per line, empty is exit):\n`)
             
-            for await (const line of rl) {
-                if ( line ) {
-                    paths.push( line )
-                } else {
-                    break
+                const paths = []
+                
+                for await (const line of rl) {
+                    if ( line ) {
+                        paths.push( line )
+                    } else {
+                        break
+                    }
                 }
-            }
 
-            config.paths = paths
+                config.paths = paths
 
-            fs.writeFileSync( path.resolve( __dirname, 'config.json' ), JSON.stringify( config, undefined, 4 ))
+                fs.writeFileSync( path.resolve( __dirname, 'config.json' ), JSON.stringify( config, undefined, 4 ))
 
-            console.log( 'Thank you for using Nanomoln. Enjoy.' )
+                console.log( 'Thank you for using Nanomoln. Enjoy.' )
+            })
         })
     })
 })

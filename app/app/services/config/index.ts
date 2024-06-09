@@ -1,7 +1,10 @@
 import { jsonService } from '~/services/json'
 
+export * from './consts'
+
 export
 interface IConfig {
+    maxsize: number
     paths: string[]
     accept: string[]
 }

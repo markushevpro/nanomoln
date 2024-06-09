@@ -1,12 +1,13 @@
 import { unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from '@remix-run/node'
 
-import { configService } from '~/services/config'
+import { configService, DEFAULT_MAX_SIZE } from '~/services/config'
 
 export
 async function upload
 ( request: Request, query: URLSearchParams ): Promise<null>
 {
-    const target = query.get( 'target' ) ?? undefined
+    const target      = query.get( 'target' ) ?? undefined
+    const { maxsize } = configService.get() ?? DEFAULT_MAX_SIZE
 
     const uploadHandler = unstable_composeUploadHandlers(
 
@@ -19,8 +20,7 @@ async function upload
                 await unstable_createFileUploadHandler({
                     directory:          target,
                     avoidFileConflicts: false,
-                    // TODO: Move to config
-                    maxPartSize:        10_000_000,
+                    maxPartSize:        maxsize,
                     file:               ({ filename }) => filename
                 })({
                     name,
