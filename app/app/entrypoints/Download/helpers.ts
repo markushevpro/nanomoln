@@ -1,5 +1,6 @@
 import { configService } from '~/services/config'
 import { hashService }   from '~/services/hash'
+import { universalPath } from '~/shared/lib/utils/path'
 
 export
 function pathIsAllowed
@@ -34,5 +35,5 @@ function getPathFromHash
         return
     }
 
-    return `${top}/${file}`.replace( /[/]+/g, '/' )
+    return universalPath( `${top}/${file}` )
 }

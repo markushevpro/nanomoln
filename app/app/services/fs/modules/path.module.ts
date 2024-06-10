@@ -3,7 +3,8 @@ import type { IFSInfo, ITopPathInfo } from '../types'
 import fs    from 'fs'
 import _path from 'path'
 
-import { hashService } from '~/services/hash'
+import { hashService }   from '~/services/hash'
+import { universalPath } from '~/shared/lib/utils/path'
 
 import * as dir from './dir.module'
 
@@ -25,7 +26,7 @@ export
 function relative
 ( parent: string, fullpath: string ): string
 {
-    return _path.relative( parent, fullpath ).replace( /\\/g, '/' )
+    return universalPath( _path.relative( parent, fullpath ))
 }
 
 export

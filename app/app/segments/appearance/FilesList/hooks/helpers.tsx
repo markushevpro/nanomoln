@@ -3,10 +3,11 @@ import type { IListItem }                                    from '~/shared/ui-k
 
 import { IconFolderFilled, IconFolderUp } from '@tabler/icons-react'
 
-import { DirActions }  from '~/segments/behavior/DirActions'
-import { FileActions } from '~/segments/behavior/FileActions'
-import { FileInfo }    from '~/segments/elements/FileInfo'
-import { FolderInfo }  from '~/segments/elements/FolderInfo'
+import { DirActions }   from '~/segments/behavior/DirActions'
+import { FileActions }  from '~/segments/behavior/FileActions'
+import { FileInfo }     from '~/segments/elements/FileInfo'
+import { FolderInfo }   from '~/segments/elements/FolderInfo'
+import { relativePath } from '~/shared/lib/utils/path'
 
 function formatFiles
 ( files?: IFileInfo[]): IListItem[]
@@ -45,7 +46,7 @@ function formatFolders
                 icon:       <IconFolderUp />,
                 link:       parent === top.path
                     ? `/view/${top.hash}`
-                    : `/view/${top.hash}${parent.replace( /\\/g, '/' ).replace( top.path, '' )}`
+                    : `/view/${top.hash}${relativePath( top, parent )}`
             })
         }
 

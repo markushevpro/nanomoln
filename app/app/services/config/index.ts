@@ -1,4 +1,5 @@
-import { jsonService } from '~/services/json'
+import { jsonService }   from '~/services/json'
+import { universalPath } from '~/shared/lib/utils/path'
 
 export * from './consts'
 
@@ -17,7 +18,14 @@ class ConfigService
     ()
     {
         this.config = jsonService.read( './config.json' )
+        this.fixPaths()
         console.log( '[nanomoln] Config loaded:', this.config )
+    }
+
+    fixPaths
+    (): void
+    {
+        this.config.paths = this.config.paths.map( p => universalPath( p ))
     }
 
     get

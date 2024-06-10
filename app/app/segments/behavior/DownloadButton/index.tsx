@@ -4,9 +4,8 @@ import type { IFileInfo }   from '~/services/fs/types'
 import { ActionIcon }   from '@mantine/core'
 import { IconDownload } from '@tabler/icons-react'
 
+import { relativePath }      from '~/shared/lib/utils/path'
 import { useFilesStoreData } from '~/shared/stores/files'
-
-import { getRelative } from './helpers'
 
 interface IDownloadButtonProps
 {
@@ -22,7 +21,7 @@ function DownloadButton
 
     const download = () => {
         if ( top ) {
-            window.open( `/api/download?hash=${top.hash}&file=${getRelative( top, file )}` )
+            window.open( `/api/download?hash=${top.hash}&file=${relativePath( top, file.path )}` )
             // const a = document.createElement( 'a' )
 
             // a.download = file.filename

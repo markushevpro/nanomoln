@@ -2,13 +2,15 @@ import type { IFileInfo } from '../types'
 
 import fs from 'fs'
 
+import { universalPath } from '~/shared/lib/utils/path'
+
 import * as path from './path.module'
 
 export
 function getName
 ( filename: string ): string
 {
-    return filename.replace( /[\\]+/g, '/' ).split( '/' ).pop() ?? filename
+    return universalPath( filename ).split( '/' ).pop() ?? filename
 }
 
 export
@@ -54,7 +56,7 @@ async function move
                 }
             })
         } else {
-            console.error( `Path not found: ${target}`)
+            console.error( `Path not found: ${target}` )
         }
 
         resolve()
