@@ -29,50 +29,50 @@ function ListView
     const isLocked = ( item: Partial<IListItem> ) => !!( locked?.includes( item.path ?? '' ) || locked?.includes( item.text ?? '' ))
 
     return (
-        <ScrollArea>
-            <Table
-                highlightOnHover
-                classNames={styles}
-                horizontalSpacing="0"
-                miw={800}
-                verticalSpacing="sm"
-            >
-                { children }
+        <Table
+            highlightOnHover
+            stickyHeader
+            classNames={styles}
+            horizontalSpacing="0"
+            miw={800}
+            stickyHeaderOffset={60}
+            verticalSpacing="sm"
+        >
+            { children }
 
-                <Table.Tbody>
-                    {
-                        data.map(({ key, ...props }: IListItem ) => (
-                            <ListItem
-                                key={key}
-                                checked={handlers.isSelected?.( key )}
-                                component={component}
-                                draggable={draggable}
-                                locked={isLocked( props )}
-                                selection={selection}
-                                item={{
-                                    ...props,
-                                    locked: isLocked( props ),
-                                    icon:   (
-                                        !props.icon && isLocked( props )
-                                            ? (
-                                                <Loader color="gray" size="xs" />
-                                            )
-                                            : props.icon
-                                    ),
-                                    selectable,
-                                    showIcon: showIcons
-                                }}
-                                onDrop={handlers.drop}
-                                onToggle={handlers.select?.( props.path )}
-                                onSave={handlers.change({
-                                    key,
-                                    ...props
-                                })}
-                            />
-                        ))
-                    }
-                </Table.Tbody>
-            </Table>
-        </ScrollArea>
+            <Table.Tbody>
+                {
+                    data.map(({ key, ...props }: IListItem ) => (
+                        <ListItem
+                            key={key}
+                            checked={handlers.isSelected?.( key )}
+                            component={component}
+                            draggable={draggable}
+                            locked={isLocked( props )}
+                            selection={selection}
+                            item={{
+                                ...props,
+                                locked: isLocked( props ),
+                                icon:   (
+                                    !props.icon && isLocked( props )
+                                        ? (
+                                            <Loader color="gray" size="xs" />
+                                        )
+                                        : props.icon
+                                ),
+                                selectable,
+                                showIcon: showIcons
+                            }}
+                            onDrop={handlers.drop}
+                            onToggle={handlers.select?.( props.path )}
+                            onSave={handlers.change({
+                                key,
+                                ...props
+                            })}
+                        />
+                    ))
+                }
+            </Table.Tbody>
+        </Table>
     )
 }

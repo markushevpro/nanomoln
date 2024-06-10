@@ -23,10 +23,10 @@ function useSmartUpload
 {
     const config = useContext( ConfigContext )
 
-    const { data: folder }                                   = useFolder()
-    const { upload }                                         = useFilesHandlers()
-    const { confirm: confirmOverwrite, hide: hideOverwrite } = useOverwriteConfirmation()
-    const { confirm: confirmOverweight }                     = useOverweightConfirmation()
+    const { data: folder }                                     = useFolder()
+    const { upload }                                           = useFilesHandlers()
+    const { confirm: confirmOverwrite, hide: hideOverwrite }   = useOverwriteConfirmation()
+    const { confirm: confirmOverweight, hide: hideOverweight } = useOverweightConfirmation()
 
     const uploadAll = useCallback(
         ( files: File[]) => () => {
@@ -100,11 +100,12 @@ function useSmartUpload
         ( files: FileWithPath[]) => {
             if ( folder?.path ) {
                 checkSizes( files, ( filtered: File[]) => {
+                    hideOverweight()
                     checkOverwrite( filtered )
                 })
             }
         },
-        [ folder, checkSizes, checkOverwrite ]
+        [ folder, checkSizes, checkOverwrite, hideOverweight ]
     )
 
     return useMemo(() => ({ upload: handleUpload }), [ handleUpload ])

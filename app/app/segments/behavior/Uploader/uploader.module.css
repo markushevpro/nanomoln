@@ -2,11 +2,15 @@
     background-color: transparent;
 }
 
+.root [data-idle] {
+    opacity: 0;
+}
+
 .root [data-accept],
 .root [data-reject],
 .root [data-loading]
 {
-        opacity: 0.5 !important;
+    opacity: 0.5 !important;
 }
 
 .root :global(.mantine-Dropzone-inner) {
