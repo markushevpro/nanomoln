@@ -14,7 +14,7 @@ function useReload
     const { update }      = useFilesStoreActions()
 
     // Dirty hack to handle slow upload promises
-    const original = window.location.pathname
+    const original = typeof window !== 'undefined' ? window.location.pathname : ''
 
     const handler = useCallback(
         () =>

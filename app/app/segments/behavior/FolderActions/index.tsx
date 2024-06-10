@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react'
 
 import { useFolder } from '~/services/folder/hooks/useFolder'
 
-import { Uploader } from '../Uploader'
+import { RefreshButton } from '../RefreshButton'
+import { Uploader }      from '../Uploader'
 
 export
 function FolderActions
@@ -23,6 +24,7 @@ function FolderActions
 
     return (
         <>
+            <RefreshButton />
             <Uploader />
 
             <ActionIcon c="primary.0" size="lg" onClick={create}>
