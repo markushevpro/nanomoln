@@ -1,4 +1,4 @@
-import type { IPathInfo } from '~/services/fs/types'
+import type { IFSInfo, IPathInfo } from '~/services/fs/types'
 
 import { useMemo } from 'react'
 
@@ -7,6 +7,8 @@ import { useFilesStoreData } from '~/shared/stores/files'
 import { useCreateFolder } from './useCreateFolder'
 import { useEditInFolder } from './useEditInFolder'
 import { useReload }       from './useReload'
+
+const sorter = ( a: IFSInfo, b: IFSInfo ): number => a.filename.toLocaleLowerCase().localeCompare( b.filename.toLocaleLowerCase())
 
 interface IUseFolderResult {
     data?: IPathInfo
@@ -31,10 +33,11 @@ function useFolder
         content
             ? {
                 ...content,
-                files: [
+                folders: content.folders.sort( sorter ),
+                files:   [
                     ...content.files,
                     ...temporary.filter( f => !content.files.find( cf => cf.path !== f.path ))
-                ].sort(( a, b ) => b.filename.localeCompare( a.filename ))
+                ].sort( sorter )
             }
             : content
     ), [ temporary, content ])

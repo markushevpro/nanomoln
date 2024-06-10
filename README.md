@@ -42,7 +42,7 @@ npm start
 You can automatically set or update config files with following command
 
 ```sh
-node ./configure.cjs
+npm run config
 ```
 
 ### config.json
