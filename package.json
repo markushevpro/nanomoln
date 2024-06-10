@@ -17,6 +17,7 @@
     "@mantine/core": "^7.6.2",
     "@mantine/dropzone": "^7.9.1",
     "@mantine/hooks": "^7.6.2",
+    "@mantine/notifications": "^7.10.1",
     "@remix-run/css-bundle": "^2.6.0",
     "@remix-run/node": "^2.6.0",
     "@remix-run/react": "^2.6.0",

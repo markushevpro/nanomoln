@@ -5,6 +5,19 @@ import { apiService }      from '~/services/api'
 import { fsClientService } from '~/services/fs/client.service'
 
 export
+function checkExist
+( data: IPathInfo, name: string, onExist: ( name: string ) => void ): boolean
+{
+    const exist = !!data.folders.find( f => f.filename === name ) || !!data.files.find( f => f.filename === name )
+
+    if ( exist ) {
+        onExist( name )
+    }
+
+    return exist
+}
+
+export
 async function getFiles
 <T extends IPathInfo>
 ( key: string, data: T, topPath: string ): Promise<Partial<IFilesStoreData>>
@@ -85,6 +98,18 @@ function applyDraft
     })
 }
 
+function flushDraftList
+<T extends IFSInfo & IFSEditable>
+( list: T[]): T[]
+{
+    return list
+        .filter( f => !f.draft || !!f.filename )
+        .map( f => ({
+            ...f,
+            draft: false
+        }))
+}
+
 export
 function flushDraft
 <T extends IPathInfo>
@@ -92,14 +117,8 @@ function flushDraft
 {
     return {
         ...target,
-        folders: target.folders.map( f => ({
-            ...f,
-            draft: false
-        })),
-        files: target.files.map( f => ({
-            ...f,
-            draft: false
-        }))
+        folders: flushDraftList( target.folders ),
+        files:   flushDraftList( target.files )
     }
 }
 

@@ -7,7 +7,7 @@ interface IFolderCreatePayload {
 
 export
 function create
-( payload: IFolderCreatePayload ): string | undefined
+( payload: IFolderCreatePayload ): string | null
 {
     return fsService.dir.create( payload.path, payload.name )
 }

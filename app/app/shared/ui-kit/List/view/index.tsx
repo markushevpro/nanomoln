@@ -26,7 +26,7 @@ function ListView
 
     const showIcons = config?.showIcons === undefined ? true : config.showIcons
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    const isLocked = ( item: Partial<IListItem> ) => locked?.includes( item.path ?? '' ) || locked?.includes( item.text ?? '' )
+    const isLocked = ( item: Partial<IListItem> ) => !!( locked?.includes( item.path ?? '' ) || locked?.includes( item.text ?? '' ))
 
     return (
         <ScrollArea>
@@ -51,7 +51,8 @@ function ListView
                                 selection={selection}
                                 item={{
                                     ...props,
-                                    icon: (
+                                    locked: isLocked( props ),
+                                    icon:   (
                                         !props.icon && isLocked( props )
                                             ? (
                                                 <Loader color="gray" size="xs" />

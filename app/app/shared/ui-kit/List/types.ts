@@ -1,6 +1,7 @@
 import type { ReactNode, JSXElementConstructor } from 'react'
 import type { ISelection }                       from '~/shared/lib/hooks/useSelection'
 
+// TODO: Refactor, too many properties
 export interface IListItemData {
     text: string
     link?: string
@@ -12,6 +13,7 @@ export interface IListItemData {
     icon?: ReactNode
     acceptDrop?: boolean
     path?: string
+    locked?: boolean
 }
 
 export interface IListItem extends IListItemData {

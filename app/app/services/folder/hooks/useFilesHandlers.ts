@@ -2,11 +2,13 @@ import type { IListItemData } from '~/shared/ui-kit/List/types'
 
 import { useCallback, useMemo } from 'react'
 
-import { apiService }           from '~/services/api'
-import { infoFromFiles }        from '~/services/fs/modules/file.module'
-import { useFilesStoreActions } from '~/shared/stores/files'
+import { apiService }                              from '~/services/api'
+import { infoFromFiles }                           from '~/services/fs/modules/file.module'
+import { showError }                               from '~/services/notifications'
+import { useFilesStoreActions, useFilesStoreData } from '~/shared/stores/files'
 
-import { useFolder } from './useFolder'
+import { checkExist, flushDraft } from './helpers'
+import { useFolder }              from './useFolder'
 
 interface IFIlesHandlersResult
 {
@@ -20,27 +22,54 @@ export
 function useFilesHandlers
 (): IFIlesHandlersResult
 {
-    const { data, reload } = useFolder()
-    const { lock, temp }   = useFilesStoreActions()
+    const { data, reload }       = useFolder()
+    const { folder, top }        = useFilesStoreData()
+    const { lock, temp, update } = useFilesStoreActions()
+
+    const showExistError = useCallback(
+        ( name: string ) => {
+            showError( 'Error', `Folder or file called "${name}" already exist` )
+            lock([])
+        },
+        [ lock ]
+    )
 
     const rename = useCallback(
+        // eslint-disable-next-line max-statements
         async ( item: IListItemData, raw: string ) =>
         {
             const name = raw.split( /(\/|\\)/ )[ 0 ]
+            let error  = false
 
             if ( data && item.draft ) {
                 if ( name && name !== item.text ) {
                     if ( item.text ) {
-                        await apiService.rename( data.path, item.text, name )
+                        if ( !checkExist( data, name, showExistError )) {
+                            await apiService.rename( data.path, item.text, name )
+                        } else {
+                            error = true
+                        }
                     } else {
-                        await apiService.createFolder( data.path, name )
+                        if ( !checkExist( data, name, showExistError )) {
+                            await apiService.createFolder( data.path, name )
+                        } else {
+                            error = true
+                        }
                     }
-                }
 
-                reload?.()
+                    if ( !error ) {
+                        reload?.()
+                    }
+                } else {
+                    update({
+                        folder: folder ? flushDraft( folder ) : folder,
+                        top:    top ? flushDraft( top ) : top,
+                        locked: []
+                    })
+                }
             }
         },
-        [ data, reload ]
+        [ data, reload, update, folder, top, showExistError ]
     )
 
     const move = useCallback(

@@ -3,6 +3,8 @@ import type { LinkDescriptor } from '@remix-run/node'
 import { ColorSchemeScript, MantineProvider } from '@mantine/core'
 import '@mantine/core/styles.css'
 import '@mantine/dropzone/styles.css'
+import { Notifications }                      from '@mantine/notifications'
+import '@mantine/notifications/styles.css'
 import { cssBundleHref }                      from '@remix-run/css-bundle'
 import {
     Links,
@@ -56,6 +58,7 @@ function App
                     <Scripts />
                     <LiveReload />
                     <Popups />
+                    <Notifications position='top-center' zIndex={1000} />
                 </MantineProvider>
             </body>
         </html>

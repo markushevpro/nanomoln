@@ -19,7 +19,7 @@ interface IFileCellContentProps
 
 export
 function FileCellContent
-({ visible, draft, text, link, onSave }: IFileCellContentProps ): ReactNode
+({ visible, locked, draft, text, link, onSave }: IFileCellContentProps ): ReactNode
 {
     if ( !visible ) {
         return null
@@ -30,7 +30,7 @@ function FileCellContent
             {
                 ( draft && onSave )
                     ? (
-                        <EditInput value={text} onSave={onSave} />
+                        <EditInput disabled={locked} value={text} onSave={onSave} />
                     )
                     : (
                         link

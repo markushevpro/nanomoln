@@ -6,36 +6,54 @@ import { useCallback, useState } from 'react'
 interface IEditInputProps
 {
     value?: string
+    disabled?: boolean
     onSave: ( value: string ) => void
 }
 
 export
 function EditInput
-({ value, onSave }: IEditInputProps )
+({ value, disabled, onSave }: IEditInputProps )
 {
     const [ innerValue, $innerValue ] = useState<string>( value ?? '' )
-    const [ loading, $loading ]       = useState<boolean>( false )
 
     const handleChange = ( e: ChangeEvent<HTMLInputElement> ) => {
         $innerValue( e.currentTarget.value )
     }
 
-    const handleKeyPress = ( e: KeyboardEvent<HTMLInputElement> ) => {
-        if ( e.key === 'Enter' ) {
-            handleSave()
-        }
-    }
+    const handleCancel = useCallback(
+        () => {
+            onSave( value ?? '' )
+        },
+        [ value, onSave ]
+    )
 
-    const handleSave = useCallback(() => {
-        $loading( true )
-        onSave( innerValue )
-    }, [ innerValue, onSave ])
+    const handleSave = useCallback(
+        () => {
+            onSave( innerValue )
+        },
+        [ innerValue, onSave ]
+    )
+
+    const handleKeyPress = useCallback(
+        ( e: KeyboardEvent<HTMLInputElement> ) =>
+        {
+            if ( e.key === 'Enter' ) {
+                handleSave()
+            }
+
+            if ( e.key === 'Escape' ) {
+                handleCancel()
+            }
+        },
+        [ handleSave, handleCancel ]
+    )
 
     return (
         <TextInput
             autoFocus
-            disabled={loading}
+            disabled={disabled}
             value={innerValue}
+            onBlur={handleCancel}
             onChange={handleChange}
             onKeyUp={handleKeyPress}
         />

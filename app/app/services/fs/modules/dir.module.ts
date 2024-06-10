@@ -31,9 +31,15 @@ function draft
 
 export
 function create
-( dir: string, name: string ): string | undefined
+( dir: string, name: string ): string | null
 {
-    return fs.mkdirSync( path.resolve( dir, name ), { recursive: true })
+    const target = path.resolve( dir, name )
+
+    if ( fs.existsSync( target )) {
+        return null
+    }
+
+    return fs.mkdirSync( target, { recursive: true }) ?? null
 }
 
 export
