@@ -21,14 +21,7 @@ function DownloadButton
 
     const download = () => {
         if ( top ) {
-            window.open( `/api/download?hash=${top.hash}&file=${relativePath( top, file.path )}` )
-            // const a = document.createElement( 'a' )
-
-            // a.download = file.filename
-            // a.href     = `/api/download?hash=${top.hash}&file=${file.relative}`
-            // a.target   = '_blank'
-
-            // a.click()
+            window.location.href = `/api/download?hash=${top.hash}&file=${relativePath( top, file.path )}`
         }
     }
 
