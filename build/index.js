@@ -367,6 +367,14 @@ var HashService = class {
   }
 }, hashService = new HashService();
 
+// app/app/shared/lib/utils/path.ts
+function universalPath(path) {
+  return path.replace(/[\\]+/g, "/");
+}
+function relativePath(top, path) {
+  return universalPath(path).replace(top.path, "");
+}
+
 // app/app/services/fs/modules/path.module.ts
 function getDir(path) {
   return _path.dirname(path);
@@ -375,7 +383,7 @@ function resolve(dir, file) {
   return _path.resolve(dir, file);
 }
 function relative(parent, fullpath) {
-  return _path.relative(parent, fullpath).replace(/\\/g, "/");
+  return universalPath(_path.relative(parent, fullpath));
 }
 function stats(dir, filename) {
   let fullpath = resolve(dir, filename), stats2 = fs.statSync(fullpath);
@@ -465,7 +473,7 @@ __export(file_module_exports, {
 });
 import fs3 from "fs";
 function getName(filename) {
-  return filename.replace(/[\\]+/g, "/").split("/").pop() ?? filename;
+  return universalPath(filename).split("/").pop() ?? filename;
 }
 function read2(filename) {
   return fs3.readFileSync(resolve(process.cwd(), filename), "utf8");
@@ -530,7 +538,10 @@ var JSONService = class {
 var ConfigService = class {
   config;
   constructor() {
-    this.config = jsonService.read("./config.json"), console.log("[nanomoln] Config loaded:", this.config);
+    this.config = jsonService.read("./config.json"), this.fixPaths(), console.log("[nanomoln] Config loaded:", this.config);
+  }
+  fixPaths() {
+    this.config.paths = this.config.paths.map((p) => universalPath(p));
   }
   get() {
     return this.config;
@@ -558,7 +569,7 @@ function getPathFromHash(hash, file) {
     return;
   let config = configService.get(), { paths } = config, top = paths.find((top2) => hashService.get(top2) === hash);
   if (top)
-    return `${top}/${file}`.replace(/[/]+/g, "/");
+    return universalPath(`${top}/${file}`);
 }
 
 // app/app/entrypoints/Download/index.ts
@@ -727,11 +738,12 @@ var fsClientService = { dir: { draft } };
 
 // app/app/services/folder/hooks/helpers.ts
 async function getFiles(key, data, topPath) {
+  let folders = await apiService.getFolders(data.path, topPath), files2 = await apiService.getFiles(data.path);
   return {
     [key]: {
       ...data,
-      folders: await apiService.getFolders(data.path, topPath),
-      files: await apiService.getFiles(data.path)
+      folders,
+      files: files2
     }
   };
 }
@@ -830,22 +842,29 @@ function useReload() {
   let { top, folder } = useFilesStoreData(), { update } = useFilesStoreActions();
   return useCallback4(
     () => {
-      update && reloadData(folder, top).then(update);
+      update && reloadData(folder, top).then((data) => {
+        update({
+          ...data,
+          locked: []
+        });
+      });
     },
     [folder, top, update]
   );
 }
 
 // app/app/services/folder/hooks/useFolder.ts
+var sorter = (a, b) => a.filename.toLocaleLowerCase().localeCompare(b.filename.toLocaleLowerCase());
 function useFolder() {
-  let { folder, top, temporary } = useFilesStoreData(), reload = useReload(), create5 = useCreateFolder(), edit = useEditInFolder(), content2 = folder ?? top;
+  let { folder, top, temporary } = useFilesStoreData(), reload = useReload(), create5 = useCreateFolder(), edit = useEditInFolder(), content2 = useMemo2(() => folder ?? top, [folder, top]);
   return {
     data: useMemo2(() => content2 && {
       ...content2,
+      folders: content2.folders.sort(sorter),
       files: [
         ...content2.files,
-        ...temporary.filter((f) => !content2.files.find((cf) => cf.path !== f.path))
-      ].sort((a, b) => b.filename.localeCompare(a.filename))
+        ...temporary.filter((f) => !content2.files.find((cf) => cf.filename === f.filename))
+      ].sort(sorter)
     }, [temporary, content2]),
     reload,
     create: create5,
@@ -863,18 +882,18 @@ function useFilesHandlers() {
     [data, reload]
   ), move3 = useCallback5(
     async (source, target) => {
-      source.includes(target) || (lock(source), await apiService.moveFiles(source, target), reload?.(), lock([]));
+      source.includes(target) || (lock(source), await apiService.moveFiles(source, target), reload?.());
     },
     [reload, lock]
   ), upload2 = useCallback5(
     async (files2, target) => {
       let tmp = infoFromFiles(files2, target);
-      temp(tmp), lock(tmp.map((f) => f.path)), await apiService.uploadFiles(files2, target), reload?.(), lock([]);
+      temp(tmp), lock(tmp.map((f) => f.filename)), await apiService.uploadFiles(files2, target), reload?.();
     },
     [lock, temp, reload]
   ), remove3 = useCallback5(
     async (list) => {
-      lock(list), await apiService.removeFiles(list), reload?.(), lock([]);
+      lock(list), await apiService.removeFiles(list), reload?.();
     },
     [lock, reload]
   );
@@ -1221,7 +1240,7 @@ var list_module_default = { table: "u7447", thead: "VgQ3Y", tr: "WpJ8d", td: "wR
 // app/app/shared/ui-kit/List/view/index.tsx
 import { jsx as jsx20, jsxs as jsxs5 } from "react/jsx-runtime";
 function ListView({ data, selection, component, config, children, handlers }) {
-  let { selectable, draggable, locked } = config ?? {}, showIcons = config?.showIcons === void 0 ? !0 : config.showIcons;
+  let { selectable, draggable, locked } = config ?? {}, showIcons = config?.showIcons === void 0 ? !0 : config.showIcons, isLocked = (item) => locked?.includes(item.path ?? "") || locked?.includes(item.text ?? "");
   return /* @__PURE__ */ jsx20(ScrollArea, { children: /* @__PURE__ */ jsxs5(
     Table8,
     {
@@ -1239,11 +1258,11 @@ function ListView({ data, selection, component, config, children, handlers }) {
               checked: handlers.isSelected?.(key),
               component,
               draggable,
-              locked: locked?.includes(props.path ?? ""),
+              locked: isLocked(props),
               selection,
               item: {
                 ...props,
-                icon: !props.icon && locked?.includes(props.path ?? "") ? /* @__PURE__ */ jsx20(Loader, { color: "gray", size: "xs" }) : props.icon,
+                icon: !props.icon && isLocked(props) ? /* @__PURE__ */ jsx20(Loader, { color: "gray", size: "xs" }) : props.icon,
                 selectable,
                 showIcon: showIcons
               },
@@ -1418,13 +1437,6 @@ function DirActions({ dir }) {
 // app/app/segments/behavior/DownloadButton/index.tsx
 import { ActionIcon as ActionIcon3 } from "@mantine/core";
 import { IconDownload } from "@tabler/icons-react";
-
-// app/app/segments/behavior/DownloadButton/helpers.ts
-function getRelative(top, file) {
-  return file.path.replace(/[\\]+/g, "/").replace(top.path, "");
-}
-
-// app/app/segments/behavior/DownloadButton/index.tsx
 import { Fragment as Fragment9, jsx as jsx25 } from "react/jsx-runtime";
 function DownloadButton({ file, size }) {
   let { top } = useFilesStoreData();
@@ -1434,7 +1446,7 @@ function DownloadButton({ file, size }) {
       size: size ?? "lg",
       variant: "subtle",
       onClick: () => {
-        top && window.open(`/api/download?hash=${top.hash}&file=${getRelative(top, file)}`);
+        top && window.open(`/api/download?hash=${top.hash}&file=${relativePath(top, file.path)}`);
       },
       children: /* @__PURE__ */ jsx25(IconDownload, { size: 20 })
     }
@@ -1561,7 +1573,7 @@ function formatFolders(folders, top, parent) {
     draft: !1,
     text: "..",
     icon: /* @__PURE__ */ jsx33(IconFolderUp, {}),
-    link: parent === top.path ? `/view/${top.hash}` : `/view/${top.hash}${parent.replace(/\\/g, "/").replace(top.path, "")}`
+    link: parent === top.path ? `/view/${top.hash}` : `/view/${top.hash}${relativePath(top, parent)}`
   }), folders.forEach((folder) => {
     res.push({
       key: folder.path,
@@ -1989,21 +2001,29 @@ function OverwriteContent({ intersection }) {
     ] }) })
   ] });
 }
-function OverwriteButtons({ intersection, onOverwrite, onIgnore }) {
+function OverwriteButtons({ intersection, rest, onOverwrite, onIgnore }) {
   let { hide } = useConfirmationPopup();
   return /* @__PURE__ */ jsxs17(Fragment12, { children: [
     /* @__PURE__ */ jsx50(Button3, { style: { marginRight: "auto" }, variant: "subtle", onClick: hide, children: "Cancel upload" }),
     /* @__PURE__ */ jsx50(Button3, { color: "red", onClick: onOverwrite, children: intersection.length > 1 ? "Overwrite all" : "Overwrite" }),
-    intersection.length > 1 && /* @__PURE__ */ jsx50(Button3, { onClick: onIgnore, children: "Ignore exist" })
+    intersection.length > 1 && rest && rest.length > 0 && /* @__PURE__ */ jsx50(Button3, { onClick: onIgnore, children: "Ignore exist" })
   ] });
 }
 function useOverwriteConfirmation() {
   let { show, hide } = useConfirmationPopup(), confirm = useCallback13(
-    (intersection, onOverwrite, onIgnore) => {
+    (intersection, rest, onOverwrite, onIgnore) => {
       intersection && intersection.length > 0 ? show(
         "Files already exist",
         /* @__PURE__ */ jsx50(OverwriteContent, { intersection }),
-        /* @__PURE__ */ jsx50(OverwriteButtons, { intersection, onIgnore, onOverwrite })
+        /* @__PURE__ */ jsx50(
+          OverwriteButtons,
+          {
+            intersection,
+            rest,
+            onIgnore,
+            onOverwrite
+          }
+        )
       ) : console.error("Trying to show empty overwrite confirmation");
     },
     [show]
@@ -2032,8 +2052,10 @@ function useSmartUpload() {
     [folder, upload2, hideOverwrite]
   ), confirmUpload = useCallback14(
     (files2, intersection) => {
+      let rest = files2.filter((f) => !intersection.includes(f));
       confirmOverwrite(
         intersection,
+        rest,
         uploadAll(files2),
         uploadNonExist(files2, intersection)
       );
@@ -2361,7 +2383,7 @@ async function action({ request }) {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-S4TGLKH7.js", imports: ["/build/_shared/chunk-ELF33S6B.js", "/build/_shared/chunk-T36URGAI.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-57PAAZIP.js", imports: ["/build/_shared/chunk-LYSDDBWF.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_index": { id: "routes/_index", parentId: "root", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_index-UHPHIRJF.js", imports: ["/build/_shared/chunk-KO47Y67X.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/api.$": { id: "routes/api.$", parentId: "root", path: "api/*", index: void 0, caseSensitive: void 0, module: "/build/routes/api.$-Y4UUKNCU.js", imports: void 0, hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/api.download": { id: "routes/api.download", parentId: "root", path: "api/download", index: void 0, caseSensitive: void 0, module: "/build/routes/api.download-5ACXKL6V.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/view.$path.$": { id: "routes/view.$path.$", parentId: "root", path: "view/:path/*", index: void 0, caseSensitive: void 0, module: "/build/routes/view.$path.$-C46RFJ5J.js", imports: ["/build/_shared/chunk-KO47Y67X.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "627a51af", hmr: void 0, url: "/build/manifest-627A51AF.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-S4TGLKH7.js", imports: ["/build/_shared/chunk-ELF33S6B.js", "/build/_shared/chunk-T36URGAI.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-57PAAZIP.js", imports: ["/build/_shared/chunk-LYSDDBWF.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_index": { id: "routes/_index", parentId: "root", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_index-O32Y3BQ7.js", imports: ["/build/_shared/chunk-OAP63DEJ.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/api.$": { id: "routes/api.$", parentId: "root", path: "api/*", index: void 0, caseSensitive: void 0, module: "/build/routes/api.$-Y4UUKNCU.js", imports: void 0, hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/api.download": { id: "routes/api.download", parentId: "root", path: "api/download", index: void 0, caseSensitive: void 0, module: "/build/routes/api.download-5ACXKL6V.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/view.$path.$": { id: "routes/view.$path.$", parentId: "root", path: "view/:path/*", index: void 0, caseSensitive: void 0, module: "/build/routes/view.$path.$-ULU6G5OZ.js", imports: ["/build/_shared/chunk-OAP63DEJ.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "9bf811ec", hmr: void 0, url: "/build/manifest-9BF811EC.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var mode = "production", assetsBuildDirectory = "public\\build", future = { v3_fetcherPersist: !1, v3_relativeSplatPath: !1, v3_throwAbortReason: !1, unstable_singleFetch: !1 }, publicPath = "/build/", entry = { module: entry_server_node_exports }, routes = {
