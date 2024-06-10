@@ -7,7 +7,7 @@
 
 # Current version
 
-NANOMOLN_VERSION="0.1.2"
+NANOMOLN_VERSION=$(node -p "require('./package.json').version")
 
 # Define helpers
 
