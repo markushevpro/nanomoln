@@ -3,7 +3,7 @@ import type { IListConfig, IListItem, IListItemContentProps } from '../types'
 import type { JSXElementConstructor, PropsWithChildren }      from 'react'
 import type { ISelection }                                    from '~/shared/lib/hooks/useSelection'
 
-import { Loader, ScrollArea, Table } from '@mantine/core'
+import { Loader, Table } from '@mantine/core'
 
 import { ListItem } from './ListItem'
 import styles       from './list.module.css'

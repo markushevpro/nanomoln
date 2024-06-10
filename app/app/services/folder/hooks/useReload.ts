@@ -13,20 +13,25 @@ function useReload
     const { top, folder } = useFilesStoreData()
     const { update }      = useFilesStoreActions()
 
+    // Dirty hack to handle slow upload promises
+    const original = window.location.pathname
+
     const handler = useCallback(
         () =>
         {
             if ( update ) {
-                // eslint-disable-next-line promise/always-return
                 void reloadData( folder, top ).then( data => {
-                    update({
-                        ...data,
-                        locked: []
-                    })
+                    // eslint-disable-next-line promise/always-return
+                    if ( original === window.location.pathname ) {
+                        update({
+                            ...data,
+                            locked: []
+                        })
+                    }
                 })
             }
         },
-        [ folder, top, update ]
+        [ folder, original, top, update ]
     )
 
     return handler
