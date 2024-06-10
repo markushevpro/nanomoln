@@ -12,6 +12,7 @@ const maxFilesShowing = 10
 interface IOverwritePayload
 {
     intersection: File[]
+    rest?: File[]
     onOverwrite: () => void
     onIgnore: () => void
 }
@@ -47,7 +48,7 @@ function OverwriteContent
 }
 
 function OverwriteButtons
-({ intersection, onOverwrite, onIgnore }: IOverwritePayload ): ReactNode
+({ intersection, rest, onOverwrite, onIgnore }: IOverwritePayload ): ReactNode
 {
     const { hide } = useConfirmationPopup()
 
@@ -66,7 +67,7 @@ function OverwriteButtons
             </Button>
 
             {
-                intersection.length > 1 && (
+                ( intersection.length > 1 && ( rest && rest.length > 0 )) && (
                     <Button onClick={onIgnore}>
                         Ignore exist
                     </Button>
@@ -78,7 +79,7 @@ function OverwriteButtons
 
 interface IOverwriteResult
 {
-    confirm: ( intersection: File[] | undefined, onOverwrite: () => void, onIgnore: () => void ) => void
+    confirm: ( intersection: File[] | undefined, rest: File[] | undefined, onOverwrite: () => void, onIgnore: () => void ) => void
     hide: () => void
 }
 
@@ -89,13 +90,18 @@ function useOverwriteConfirmation
     const { show, hide } = useConfirmationPopup()
 
     const confirm = useCallback(
-        ( intersection: File[] | undefined, onOverwrite: () => void, onIgnore: () => void ) =>
+        ( intersection: File[] | undefined, rest: File[] | undefined, onOverwrite: () => void, onIgnore: () => void ) =>
         {
             if ( intersection && intersection.length > 0 ) {
                 show(
                     'Files already exist',
                     <OverwriteContent intersection={intersection} />,
-                    <OverwriteButtons intersection={intersection} onIgnore={onIgnore} onOverwrite={onOverwrite} />
+                    <OverwriteButtons
+                        intersection={intersection}
+                        rest={rest}
+                        onIgnore={onIgnore}
+                        onOverwrite={onOverwrite}
+                    />
                 )
             } else {
                 console.error( 'Trying to show empty overwrite confirmation' )

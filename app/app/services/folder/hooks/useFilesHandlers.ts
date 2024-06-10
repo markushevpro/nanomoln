@@ -50,7 +50,6 @@ function useFilesHandlers
                 lock( source )
                 await apiService.moveFiles( source, target )
                 reload?.()
-                lock([])
             }
         },
         [ reload, lock ]
@@ -62,12 +61,11 @@ function useFilesHandlers
             const tmp = infoFromFiles( files, target )
 
             temp( tmp )
-            lock( tmp.map( f => f.path ))
+            lock( tmp.map( f => f.filename ))
 
             await apiService.uploadFiles( files, target )
 
             reload?.()
-            lock([])
         },
         [ lock, temp, reload ]
     )
@@ -80,7 +78,6 @@ function useFilesHandlers
             await apiService.removeFiles( list )
 
             reload?.()
-            lock([])
         },
         [ lock, reload ]
     )

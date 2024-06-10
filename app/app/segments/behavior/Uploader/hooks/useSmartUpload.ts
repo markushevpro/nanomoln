@@ -51,8 +51,11 @@ function useSmartUpload
 
     const confirmUpload = useCallback(
         ( files: FileWithPath[], intersection: File[]) => {
+            const rest = files.filter( f => !intersection.includes( f ))
+
             confirmOverwrite(
                 intersection,
+                rest,
                 uploadAll( files ),
                 uploadNonExist( files, intersection )
             )

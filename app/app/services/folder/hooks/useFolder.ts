@@ -27,7 +27,7 @@ function useFolder
     const create = useCreateFolder()
     const edit   = useEditInFolder()
 
-    const content = folder ?? top
+    const content = useMemo(() => { return folder ?? top }, [ folder, top ])
 
     const data = useMemo(() => (
         content
@@ -36,7 +36,7 @@ function useFolder
                 folders: content.folders.sort( sorter ),
                 files:   [
                     ...content.files,
-                    ...temporary.filter( f => !content.files.find( cf => cf.path !== f.path ))
+                    ...temporary.filter( f => !content.files.find( cf => cf.filename === f.filename ))
                 ].sort( sorter )
             }
             : content

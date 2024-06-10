@@ -9,12 +9,14 @@ async function getFiles
 <T extends IPathInfo>
 ( key: string, data: T, topPath: string ): Promise<Partial<IFilesStoreData>>
 {
-    // TODO: Make one request
+    const folders = await apiService.getFolders( data.path, topPath )
+    const files   = await apiService.getFiles( data.path )
+
     return {
         [ key ]: {
             ...data,
-            folders: await apiService.getFolders( data.path, topPath ),
-            files:   await apiService.getFiles( data.path )
+            folders,
+            files
         }
     }
 }

@@ -17,7 +17,13 @@ function useReload
         () =>
         {
             if ( update ) {
-                void reloadData( folder, top ).then( update )
+                // eslint-disable-next-line promise/always-return
+                void reloadData( folder, top ).then( data => {
+                    update({
+                        ...data,
+                        locked: []
+                    })
+                })
             }
         },
         [ folder, top, update ]

@@ -25,6 +25,8 @@ function ListView
     const { selectable, draggable, locked } = config ?? {}
 
     const showIcons = config?.showIcons === undefined ? true : config.showIcons
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    const isLocked = ( item: Partial<IListItem> ) => locked?.includes( item.path ?? '' ) || locked?.includes( item.text ?? '' )
 
     return (
         <ScrollArea>
@@ -45,12 +47,12 @@ function ListView
                                 checked={handlers.isSelected?.( key )}
                                 component={component}
                                 draggable={draggable}
-                                locked={locked?.includes( props.path ?? '' )}
+                                locked={isLocked( props )}
                                 selection={selection}
                                 item={{
                                     ...props,
                                     icon: (
-                                        !props.icon && locked?.includes( props.path ?? '' )
+                                        !props.icon && isLocked( props )
                                             ? (
                                                 <Loader color="gray" size="xs" />
                                             )
