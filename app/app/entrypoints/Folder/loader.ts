@@ -8,6 +8,7 @@ import { getFolderInfo, getPaths } from './helpers'
 
 interface IFolderData
 {
+    error?: number
     data: IFilesStoreData
 }
 
@@ -18,10 +19,9 @@ async function loader
     const { paths, target } = getPaths( params )
 
     if ( !target ) {
-        console.log( 'NOT FOUND' )
-        // TODO: 404
         return withConfig<IFolderData>({
-            data: {
+            error: 404,
+            data:  {
                 locked:    [],
                 temporary: []
             }

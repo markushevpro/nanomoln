@@ -1,3 +1,4 @@
+import { ErrorFlow }      from '~/flows/Error'
 import { MainFlow }       from '~/flows/Main'
 import { ConfigProvider } from '~/services/config/context'
 import { meta }           from '~/shared/lib/default-meta'
@@ -11,13 +12,19 @@ export
 function FolderPage
 ()
 {
-    const { loaded, config } = useFolderData()
+    const { loaded, config, error } = useFolderData()
 
-    return loaded
-        ? (
-            <ConfigProvider value={config}>
-                <MainFlow />
-            </ConfigProvider>
-        )
-        : null
+    if ( error ) {
+        return <ErrorFlow />
+    }
+
+    if ( !loaded ) {
+        return null
+    }
+
+    return (
+        <ConfigProvider value={config}>
+            <MainFlow />
+        </ConfigProvider>
+    )
 }

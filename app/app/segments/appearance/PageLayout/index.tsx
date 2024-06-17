@@ -18,7 +18,7 @@ function PageLayout
         <AppShell>
             <AppHeader actions={headerActions} />
 
-            <AppShell.Main>
+            <AppShell.Main style={{ minHeight: 'unset' }}>
                 { children }
             </AppShell.Main>
         </AppShell>
