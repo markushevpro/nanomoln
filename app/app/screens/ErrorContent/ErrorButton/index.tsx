@@ -14,7 +14,7 @@ function ErrorButton
     const { action }        = useErrorContent( code )
     const { text, handler } = useErrorButton( action )
 
-    if ( !action ) {
+    if ( !action || action === 'none' ) {
         return null
     }
 

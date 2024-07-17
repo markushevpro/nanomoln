@@ -1,5 +1,7 @@
 import type { IErrorContent } from './types'
 
+import { CONFIG_ERROR } from '~/services/error/consts'
+
 export
 const errorContent: Record<number, IErrorContent> = {
     404: {
@@ -7,6 +9,12 @@ const errorContent: Record<number, IErrorContent> = {
         content: 'Wrong URL',
         action:  'home'
     }
+}
+
+errorContent[ CONFIG_ERROR ] = {
+    title:   'Config error',
+    content: 'Config is misconfigured. Please fix config.json and restart nanomoln',
+    action:  'none'
 }
 
 export

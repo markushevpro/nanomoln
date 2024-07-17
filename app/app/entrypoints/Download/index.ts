@@ -23,7 +23,7 @@ async function loader
         return new Response( 'Not found', { status: 404 })
     }
 
-    const content  = createReadableStreamFromReadable( fs.createReadStream( path ))
+    const content  = createReadableStreamFromReadable( fs.createReadStream( path, { highWaterMark: 10000 }))
     const filename = path.split( '/' ).pop() ?? ''
     const mime     = MIME_TYPES[ filename.split( '.' ).pop()?.toLocaleLowerCase() ?? '' ] || MIME_TYPES.default
 

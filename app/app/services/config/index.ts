@@ -1,3 +1,5 @@
+import type { IWithConfig } from './helpers'
+
 import { jsonService }   from '~/services/json'
 import { universalPath } from '~/shared/lib/utils/path'
 
@@ -12,44 +14,57 @@ interface IConfig {
 
 class ConfigService
 {
-    private readonly config: IConfig
+    private readonly config: IConfig | null
+
+    error: unknown = undefined
 
     constructor
     ()
     {
-        this.config = jsonService.read( './config.json' )
-        this.fixPaths()
-        console.log( '[nanomoln] Config loaded:', this.config )
+        try {
+            this.config = jsonService.read( './config.json' )
+            this.fixPaths()
+            console.log( '[nanomoln] Config loaded:', this.config )
+        } catch ( e ) {
+            this.error  = e
+            this.config = null
+        }
     }
 
     fixPaths
     (): void
     {
-        this.config.paths = this.config.paths.map( p => universalPath( p ))
+        if ( this.config ) {
+            this.config.paths = this.config.paths.map( p => universalPath( p ))
+        }
     }
 
     get
-    (): IConfig
+    (): IWithConfig
     {
-        return this.config
+        return {
+            config: this.config,
+            error:  this.error
+        }
     }
 
     getPaths
-    (): string[]
+    (): string[] | undefined
     {
-        return this.config.paths
+        return this.config?.paths
     }
 
     getAccept
     (): string[]
     {
-        return this.config.accept || []
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        return this.config?.accept || []
     }
 
     allow
     ( type: string ): boolean
     {
-        if ( this.config.accept.includes( type )) {
+        if ( this.config?.accept.includes( type )) {
             return true
         }
 

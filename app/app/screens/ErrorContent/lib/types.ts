@@ -8,4 +8,4 @@ interface IErrorContent
 }
 
 export
-type TErrorAction = 'home' | 'reload'
+type TErrorAction = 'home' | 'reload' | 'none'

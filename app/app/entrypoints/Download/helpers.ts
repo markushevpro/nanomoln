@@ -10,10 +10,10 @@ function pathIsAllowed
         return false
     }
 
-    const config    = configService.get()
-    const { paths } = config
+    const { config } = configService.get()
+    const paths      = config?.paths ?? []
 
-    const allowed = paths.some(( top ) => hashService.get( top ) === hash )
+    const allowed = paths?.some(( top ) => hashService.get( top ) === hash )
 
     return allowed
 }
@@ -26,8 +26,8 @@ function getPathFromHash
         return
     }
 
-    const config    = configService.get()
-    const { paths } = config
+    const { config } = configService.get()
+    const paths      = config?.paths ?? []
 
     const top = paths.find(( top ) => hashService.get( top ) === hash )
 

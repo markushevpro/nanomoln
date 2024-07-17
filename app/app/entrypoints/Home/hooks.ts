@@ -10,12 +10,15 @@ export
 function useInitialData
 (): IWithConfig
 {
-    const { data, config } = useLoaderData<typeof loader>()
-    const { force }        = useFilesStoreActions()
+    const { data, config, error } = useLoaderData<typeof loader>()
+    const { force }               = useFilesStoreActions()
 
     useEffect(() => {
         force( data )
     }, [ data, force ])
 
-    return useMemo(() => ({ config }), [ config ])
+    return useMemo(() => ({
+        config,
+        error
+    }), [ config, error ])
 }

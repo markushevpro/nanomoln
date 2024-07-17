@@ -9,7 +9,7 @@ export
 function getPaths
 ( params: Params ): { paths: ITopPathInfo[], target?: ITopPathInfo }
 {
-    const paths  = fsService.path.infoList( configService.getPaths())
+    const paths  = fsService.path.infoList( configService.getPaths() ?? [])
     const target = paths.find( info => info.hash === params.path )
 
     return {

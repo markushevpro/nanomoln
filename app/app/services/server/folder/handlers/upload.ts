@@ -6,8 +6,9 @@ export
 async function upload
 ( request: Request, query: URLSearchParams ): Promise<null>
 {
-    const target      = query.get( 'target' ) ?? undefined
-    const { maxsize } = configService.get() ?? DEFAULT_MAX_SIZE
+    const target     = query.get( 'target' ) ?? undefined
+    const { config } = configService.get()
+    const maxsize    = config?.maxsize ?? DEFAULT_MAX_SIZE
 
     const uploadHandler = unstable_composeUploadHandlers(
 

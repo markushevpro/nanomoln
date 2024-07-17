@@ -6,5 +6,6 @@ const defaultButtonText = 'OK'
 export
 const errorButtons: Record<TErrorAction, string> = {
     home:   'Go home',
-    reload: 'Reload'
+    reload: 'Reload',
+    none:   ''
 }

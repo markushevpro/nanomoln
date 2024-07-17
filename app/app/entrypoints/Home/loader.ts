@@ -19,7 +19,7 @@ export
 async function loader
 (): Promise<IHomePageData & IWithConfig | TypedResponse<never>>
 {
-    const paths = fsService.path.infoList( configService.getPaths())
+    const paths = fsService.path.infoList( configService.getPaths() ?? [])
 
     if ( paths.length === 1 ) {
         return redirect( `/view/${paths[ 0 ].hash}` )

@@ -11,7 +11,7 @@ interface IUseFolderDataResult
 {
     error?: number
     loaded: boolean
-    config: IConfig
+    config: IConfig | null
 }
 
 export
