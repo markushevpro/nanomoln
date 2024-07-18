@@ -7,7 +7,7 @@
 
 # Current version
 
-NANOMOLN_VERSION="0.1.2"
+NANOMOLN_VERSION="0.1.3"
 
 # Define helpers
 
