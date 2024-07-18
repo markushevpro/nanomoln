@@ -1,0 +1,1 @@
+import{a as e,e as f}from"/build/_shared/chunk-4OAUXVZ5.js";import"/build/_shared/chunk-HAMAQUIH.js";import{a as u,n as t}from"/build/_shared/chunk-WD2TQZTD.js";import{d as r}from"/build/_shared/chunk-T36URGAI.js";var m=r(u(),1);var i=r(t(),1);function p(){let{set:o}=e();return(0,m.useEffect)(()=>{o(404)},[o]),(0,i.jsx)(f,{})}var E=p;export{E as default};
