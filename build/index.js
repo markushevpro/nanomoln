@@ -318,22 +318,11 @@ __export(route_exports, {
 });
 
 // app/app/entrypoints/Download/index.ts
-import fs4 from "fs";
-import { createReadableStreamFromReadable as createReadableStreamFromReadable2 } from "@remix-run/node";
+import fs5 from "fs";
+import { redirect } from "@remix-run/node";
 
-// app/app/entrypoints/Download/consts.ts
-var MIME_TYPES = {
-  default: "application/octet-stream",
-  html: "text/html; charset=UTF-8",
-  js: "application/javascript",
-  css: "text/css",
-  png: "image/png",
-  jpg: "image/jpg",
-  gif: "image/gif",
-  ico: "image/x-icon",
-  svg: "image/svg+xml",
-  mp3: "audio/mpeg"
-};
+// app/app/entrypoints/Download/helpers.ts
+import fs4 from "fs";
 
 // app/app/services/fs/modules/dir.module.ts
 var dir_module_exports = {};
@@ -582,6 +571,12 @@ function getPathFromHash(hash, file) {
   if (top)
     return universalPath(`${top}/${file}`);
 }
+function createSymlink(path, file) {
+  let dest = `${process.cwd()}/public/tmp`;
+  fs4.existsSync(dest) || fs4.mkdirSync(dest);
+  let destFile = `${dest}${file}`;
+  fs4.existsSync(destFile) || fs4.symlinkSync(path, destFile, "file");
+}
 
 // app/app/entrypoints/Download/index.ts
 async function loader({ request }) {
@@ -589,15 +584,7 @@ async function loader({ request }) {
   if (!pathIsAllowed(hash))
     return new Response("Access denied", { status: 403 });
   let path = getPathFromHash(hash, file);
-  if (!path || !fs4.existsSync(path))
-    return new Response("Not found", { status: 404 });
-  let content2 = createReadableStreamFromReadable2(fs4.createReadStream(path, { highWaterMark: 1e4 })), filename = path.split("/").pop() ?? "", mime = MIME_TYPES[filename.split(".").pop()?.toLocaleLowerCase() ?? ""] || MIME_TYPES.default;
-  return new Response(content2, {
-    headers: {
-      "Content-Disposition": `attachment; filename="${filename}"`,
-      "Content-Type": mime
-    }
-  });
+  return !path || !fs5.existsSync(path) ? new Response("Not found", { status: 404 }) : (createSymlink(path, file), redirect(`/tmp${file}`));
 }
 
 // app/routes/view.$path.$/route.ts
@@ -2497,10 +2484,10 @@ function useInitialData() {
 }
 
 // app/app/entrypoints/Home/loader.ts
-import { redirect } from "@remix-run/node";
+import { redirect as redirect2 } from "@remix-run/node";
 async function loader3() {
   let paths = fsService.path.infoList(configService.getPaths() ?? []);
-  return paths.length === 1 ? redirect(`/view/${paths[0].hash}`) : withConfig({ data: { paths } });
+  return paths.length === 1 ? redirect2(`/view/${paths[0].hash}`) : withConfig({ data: { paths } });
 }
 
 // app/app/entrypoints/Home/index.tsx
