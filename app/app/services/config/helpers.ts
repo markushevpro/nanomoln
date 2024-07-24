@@ -18,7 +18,7 @@ function withConfig
 
     return {
         ...object,
-        error,
+        error: error ?? ( object as Record<string, unknown> ).error,
         config
     }
 }
