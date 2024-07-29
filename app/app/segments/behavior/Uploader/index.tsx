@@ -20,7 +20,8 @@ function Uploader
     const { accept } = useContext( ConfigContext ) ?? { accept: [ '*' ] }
     const { upload } = useSmartUpload()
 
-    const [ active, $active ] = useState<boolean>( true )
+    const [ active, $active ]   = useState<boolean>( true )
+    const [ unknown, $unknown ] = useState<boolean>( false )
 
     const reset = useCallback(
         () => {
@@ -36,12 +37,23 @@ function Uploader
     const checkEmptyDrop = useCallback(
         ( accept: File[], reject: FileRejection[]) =>
         {
+            clearUnknown()
             if ( accept.length === 0 && reject.length === 0 ) {
                 reset()
             }
         },
         [ reset ]
     )
+
+    const checkUnknown = ( event: React.DragEvent<HTMLElement> ) => {
+        if ( Array.from( event.dataTransfer.items ).find( item => item.type === '' )) {
+            $unknown( true )
+        }
+    }
+
+    const clearUnknown = () => {
+        $unknown( false )
+    }
 
     return (
         <>
@@ -52,6 +64,8 @@ function Uploader
                         accept={accept}
                         className={styles.root}
                         openRef={openRef}
+                        onDragEnter={checkUnknown}
+                        onDragLeave={clearUnknown}
                         onDrop={upload}
                         onDropAny={checkEmptyDrop}
                     >
@@ -60,7 +74,7 @@ function Uploader
                         </Dropzone.Accept>
 
                         <Dropzone.Reject>
-                            <RejectContent />
+                            <RejectContent unknown={unknown} />
                         </Dropzone.Reject>
                     </Dropzone.FullScreen>
                 )

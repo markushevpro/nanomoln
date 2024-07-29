@@ -9,7 +9,7 @@ export
 interface IConfig {
     maxsize: number
     paths: string[]
-    accept: string[]
+    accept: Record<string, string[]>
 }
 
 class ConfigService
@@ -55,21 +55,45 @@ class ConfigService
     }
 
     getAccept
-    (): string[]
+    (): Record<string, string[]>
     {
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        return this.config?.accept || []
+        return this.config?.accept || {}
     }
 
     allow
-    ( type: string ): boolean
+    ( type: string, exts: string[]): boolean
     {
-        if ( this.config?.accept.includes( type )) {
+        const mimes = this.allowedMimes()
+
+        if ( mimes.includes( type ) || this.isExtAllowed( exts )) {
             return true
         }
 
         // TODO: Wildcard types, etc audio/*
         return false
+    }
+
+    isExtAllowed
+    ( exts: string[]): boolean
+    {
+        const allowed = this.allowedExts()
+        return allowed.some( ext => exts.includes( ext ) || exts.includes( ext.replace( /^\./, '' )))
+    }
+
+    allowedMimes
+    (): string[]
+    {
+        return Object.keys( this.config?.accept ?? {})
+    }
+
+    allowedExts
+    (): string[]
+    {
+        const all   = Object.values( this.config?.accept ?? {})
+        const joint = all.reduce(( list, arr ) => [ ...list, ...arr ], [])
+
+        return joint.map( ext => ext.toLocaleLowerCase())
     }
 }
 

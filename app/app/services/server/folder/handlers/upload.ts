@@ -1,6 +1,12 @@
-import { unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from '@remix-run/node'
+import {
+    unstable_composeUploadHandlers,
+    unstable_createFileUploadHandler,
+    unstable_createMemoryUploadHandler,
+    unstable_parseMultipartFormData
+} from '@remix-run/node'
 
 import { configService, DEFAULT_MAX_SIZE } from '~/services/config'
+import { getExt, getFullExt }              from '~/shared/lib/utils/path'
 
 export
 async function upload
@@ -14,7 +20,10 @@ async function upload
 
         async ({ name, contentType, data, filename }): Promise<undefined> => {
             if ( name === 'file' ) {
-                if ( !configService.allow( contentType )) {
+                const ext     = getExt( filename )
+                const fullExt = getFullExt( filename )
+
+                if ( !configService.allow( contentType, [ ext, fullExt ])) {
                     return
                 }
 
