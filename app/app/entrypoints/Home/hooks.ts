@@ -4,7 +4,7 @@ import type { IWithConfig } from '~/services/config/helpers'
 import {  useLoaderData }     from '@remix-run/react'
 import { useEffect, useMemo } from 'react'
 
-import { useFilesStoreActions } from '~/shared/stores/files'
+import { useFilesStoreActions } from '~/services/files/store'
 
 export
 function useInitialData

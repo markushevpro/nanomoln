@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs } from '@remix-run/node'
 import type { IWithConfig }        from '~/services/config/helpers'
-import type { IFilesStoreData }    from '~/shared/stores/files'
+import type { IFilesStoreData }    from '~/services/files/store'
 
 import { withConfig } from '~/services/config/helpers'
 

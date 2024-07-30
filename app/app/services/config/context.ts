@@ -1,4 +1,4 @@
-import type { IConfig } from '.'
+import type { IConfig } from './types'
 
 import { createContext } from 'react'
 

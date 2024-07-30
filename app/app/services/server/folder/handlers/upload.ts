@@ -5,25 +5,20 @@ import {
     unstable_parseMultipartFormData
 } from '@remix-run/node'
 
-import { configService, DEFAULT_MAX_SIZE } from '~/services/config'
-import { getExt, getFullExt }              from '~/shared/lib/utils/path'
+import { configService } from '~/services/config'
 
 export
 async function upload
 ( request: Request, query: URLSearchParams ): Promise<null>
 {
-    const target     = query.get( 'target' ) ?? undefined
-    const { config } = configService.get()
-    const maxsize    = config?.maxsize ?? DEFAULT_MAX_SIZE
+    const target  = query.get( 'target' ) ?? undefined
+    const maxsize = configService.getMaxSize( target )
 
     const uploadHandler = unstable_composeUploadHandlers(
 
         async ({ name, contentType, data, filename }): Promise<undefined> => {
             if ( name === 'file' ) {
-                const ext     = getExt( filename )
-                const fullExt = getFullExt( filename )
-
-                if ( !configService.allow( contentType, [ ext, fullExt ])) {
+                if ( !configService.allow( contentType, filename, target )) {
                     return
                 }
 

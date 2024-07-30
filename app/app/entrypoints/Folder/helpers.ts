@@ -1,6 +1,6 @@
 import type { Params }          from '@remix-run/react'
+import type { IFilesStoreData } from '~/services/files/store'
 import type { ITopPathInfo }    from '~/services/fs/types'
-import type { IFilesStoreData } from '~/shared/stores/files'
 
 import { configService } from '~/services/config'
 import { fsService }     from '~/services/fs/service'
@@ -9,7 +9,7 @@ export
 function getPaths
 ( params: Params ): { paths: ITopPathInfo[], target?: ITopPathInfo }
 {
-    const paths  = fsService.path.infoList( configService.getPaths() ?? [])
+    const paths  = fsService.path.infoList( configService.getPaths())
     const target = paths.find( info => info.hash === params.path )
 
     return {

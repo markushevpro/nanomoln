@@ -37,7 +37,7 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
-    "@markushevpro/eslint-config": "^2.0.15",
+    "@markushevpro/eslint-config": "^2.0.16",
     "@remix-run/dev": "^2.6.0",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",

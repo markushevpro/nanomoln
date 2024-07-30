@@ -7,7 +7,7 @@ import { DirActions }   from '~/segments/behavior/DirActions'
 import { FileActions }  from '~/segments/behavior/FileActions'
 import { FileInfo }     from '~/segments/elements/FileInfo'
 import { FolderInfo }   from '~/segments/elements/FolderInfo'
-import { relativePath } from '~/shared/lib/utils/path'
+import { relativePath } from '~/services/fs/utils'
 
 function formatFiles
 ( files?: IFileInfo[]): IListItem[]

@@ -3,9 +3,9 @@ import type { IListItemData } from '~/shared/ui-kit/List/types'
 import { useCallback, useMemo } from 'react'
 
 import { apiService }                              from '~/services/api'
+import { useFilesStoreData, useFilesStoreActions } from '~/services/files/store'
 import { infoFromFiles }                           from '~/services/fs/modules/file.module'
 import { showError }                               from '~/services/notifications'
-import { useFilesStoreActions, useFilesStoreData } from '~/shared/stores/files'
 
 import { checkExist, flushDraft } from './helpers'
 import { useFolder }              from './useFolder'

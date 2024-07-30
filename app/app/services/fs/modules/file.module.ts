@@ -99,3 +99,20 @@ function infoFromFiles
 {
     return files.map( file => infoFromFile( file, parent ))
 }
+
+export
+function createSymlink
+( path: string, file: string ): void
+{
+    const dest = `${process.cwd()}/public/tmp`
+
+    if ( !fs.existsSync( dest )) {
+        fs.mkdirSync( dest )
+    }
+
+    const destFile = `${dest}${file}`
+
+    if ( !fs.existsSync( destFile )) {
+        fs.symlinkSync( path, destFile, 'file' )
+    }
+}

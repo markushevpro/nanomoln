@@ -66,3 +66,10 @@ function infoList
 {
     return paths.map( path => info( path ))
 }
+
+export
+function exist
+( path: string ): boolean
+{
+    return fs.existsSync( path )
+}

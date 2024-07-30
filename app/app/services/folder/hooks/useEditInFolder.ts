@@ -2,7 +2,7 @@ import type { IDirInfo, IFileInfo } from '~/services/fs/types'
 
 import { useCallback } from 'react'
 
-import { useFilesStoreData, useFilesStoreActions } from '~/shared/stores/files'
+import { useFilesStoreData, useFilesStoreActions } from '~/services/files/store'
 
 import { editFolderIn } from './helpers'
 

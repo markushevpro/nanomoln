@@ -3,7 +3,10 @@ import type { FileRejection } from '@mantine/dropzone'
 import { Dropzone }                                  from '@mantine/dropzone'
 import { useCallback, useContext, useRef, useState } from 'react'
 
-import { ConfigContext } from '~/services/config/context'
+import { ConfigContext }        from '~/services/config/context'
+import { getAccept, isAllowed } from '~/services/config/helpers'
+import { useFolder }            from '~/services/folder/hooks/useFolder'
+import { filterUnique }         from '~/shared/lib/utils/arrays'
 
 import { AcceptContent }  from './components/AcceptContent'
 import { RejectContent }  from './components/RejectContent'
@@ -17,11 +20,15 @@ function Uploader
 {
     const openRef = useRef<() => void>( null )
 
-    const { accept } = useContext( ConfigContext ) ?? { accept: [ '*' ] }
-    const { upload } = useSmartUpload()
+    const { data: folder } = useFolder()
+    const { upload }       = useSmartUpload()
+
+    const config = useContext( ConfigContext )
+    const accept = getAccept( config, folder?.path ) ?? { accept: [ '*' ] }
 
     const [ active, $active ]   = useState<boolean>( true )
     const [ unknown, $unknown ] = useState<boolean>( false )
+    const [ mimes, $mimes ]     = useState<string[]>([])
 
     const reset = useCallback(
         () => {
@@ -37,7 +44,7 @@ function Uploader
     const checkEmptyDrop = useCallback(
         ( accept: File[], reject: FileRejection[]) =>
         {
-            clearUnknown()
+            clearDrag()
             if ( accept.length === 0 && reject.length === 0 ) {
                 reset()
             }
@@ -45,13 +52,28 @@ function Uploader
         [ reset ]
     )
 
-    const checkUnknown = ( event: React.DragEvent<HTMLElement> ) => {
-        if ( Array.from( event.dataTransfer.items ).find( item => item.type === '' )) {
-            $unknown( true )
-        }
-    }
+    const isRejected = useCallback(
+        ( item: DataTransferItem ) => (
+            item.type !== '' &&
+            !isAllowed( config, item.type, undefined, folder?.path )
+        ),
+        [ folder, config ]
+    )
 
-    const clearUnknown = () => {
+    const checkDrag = useCallback(
+        ( event: React.DragEvent<HTMLElement> ) => {
+            const items = Array.from( event.dataTransfer.items ).filter( item => item.kind === 'file' )
+
+            if ( items.find( item => item.type === '' )) {
+                $unknown( true )
+            }
+
+            $mimes( items.filter( isRejected ).map( item => item.type ).filter( filterUnique ))
+        },
+        [ isRejected ]
+    )
+
+    const clearDrag = () => {
         $unknown( false )
     }
 
@@ -64,8 +86,8 @@ function Uploader
                         accept={accept}
                         className={styles.root}
                         openRef={openRef}
-                        onDragEnter={checkUnknown}
-                        onDragLeave={clearUnknown}
+                        onDragEnter={checkDrag}
+                        onDragLeave={clearDrag}
                         onDrop={upload}
                         onDropAny={checkEmptyDrop}
                     >
@@ -74,7 +96,7 @@ function Uploader
                         </Dropzone.Accept>
 
                         <Dropzone.Reject>
-                            <RejectContent unknown={unknown} />
+                            <RejectContent mimes={mimes} unknown={unknown} />
                         </Dropzone.Reject>
                     </Dropzone.FullScreen>
                 )

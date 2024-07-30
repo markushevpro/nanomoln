@@ -3,9 +3,9 @@ import type { IListItem }  from '~/shared/ui-kit/List/types'
 
 import { useState, useEffect, useMemo } from 'react'
 
+import { useFilesStoreData } from '~/services/files/store'
 import { useFolder }         from '~/services/folder/hooks/useFolder'
 import { useSelection }      from '~/shared/lib/hooks/useSelection'
-import { useFilesStoreData } from '~/shared/stores/files'
 
 import { joinList } from './helpers'
 

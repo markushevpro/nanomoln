@@ -1,16 +1,12 @@
-import type { IWithConfig } from './helpers'
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+import type { IConfig, IConfigPaths } from './types'
 
 import { jsonService }   from '~/services/json'
 import { universalPath } from '~/shared/lib/utils/path'
 
-export * from './consts'
+import { getMaxSize, isAllowed, type IWithConfig } from './helpers'
 
-export
-interface IConfig {
-    maxsize: number
-    paths: string[]
-    accept: Record<string, string[]>
-}
+export * from './consts'
 
 class ConfigService
 {
@@ -35,7 +31,15 @@ class ConfigService
     (): void
     {
         if ( this.config ) {
-            this.config.paths = this.config.paths.map( p => universalPath( p ))
+            const res: IConfigPaths = {}
+
+            Object.keys( this.config.paths ).forEach( path => {
+                if ( this.config?.paths[ path ]) {
+                    res[ universalPath( path ) ] = this.config.paths[ path ]
+                }
+            })
+
+            this.config.paths = res
         }
     }
 
@@ -49,51 +53,21 @@ class ConfigService
     }
 
     getPaths
-    (): string[] | undefined
+    (): string[]
     {
-        return this.config?.paths
+        return Object.keys( this.config?.paths ?? {}) ?? []
     }
 
-    getAccept
-    (): Record<string, string[]>
+    getMaxSize
+    ( path?: string ): number
     {
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        return this.config?.accept || {}
+        return getMaxSize( this.config, path )
     }
 
     allow
-    ( type: string, exts: string[]): boolean
+    ( type: string, filename?: string, folder?: string ): boolean
     {
-        const mimes = this.allowedMimes()
-
-        if ( mimes.includes( type ) || this.isExtAllowed( exts )) {
-            return true
-        }
-
-        // TODO: Wildcard types, etc audio/*
-        return false
-    }
-
-    isExtAllowed
-    ( exts: string[]): boolean
-    {
-        const allowed = this.allowedExts()
-        return allowed.some( ext => exts.includes( ext ) || exts.includes( ext.replace( /^\./, '' )))
-    }
-
-    allowedMimes
-    (): string[]
-    {
-        return Object.keys( this.config?.accept ?? {})
-    }
-
-    allowedExts
-    (): string[]
-    {
-        const all   = Object.values( this.config?.accept ?? {})
-        const joint = all.reduce(( list, arr ) => [ ...list, ...arr ], [])
-
-        return joint.map( ext => ext.toLocaleLowerCase())
+        return isAllowed( this.config, type, filename, folder )
     }
 }
 

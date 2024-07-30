@@ -4,8 +4,8 @@ import type { IFileInfo }   from '~/services/fs/types'
 import { ActionIcon }   from '@mantine/core'
 import { IconDownload } from '@tabler/icons-react'
 
-import { relativePath }      from '~/shared/lib/utils/path'
-import { useFilesStoreData } from '~/shared/stores/files'
+import { useFilesStoreData } from '~/services/files/store'
+import { relativePath }      from '~/services/fs/utils'
 
 interface IDownloadButtonProps
 {

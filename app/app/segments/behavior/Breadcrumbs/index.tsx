@@ -1,7 +1,7 @@
 import { Breadcrumbs as MBreadcrumbs, Anchor } from '@mantine/core'
 import { Link }                                from '@remix-run/react'
 
-import styles             from './Breadcrumbs.module.css'
+import styles             from './breadcrumbs.module.css'
 import { useBreadcrumbs } from './hooks'
 
 export

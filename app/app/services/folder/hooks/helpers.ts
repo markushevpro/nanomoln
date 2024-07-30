@@ -1,5 +1,5 @@
+import type { IFilesStoreData }                                                    from '~/services/files/store'
 import type { IDirInfo, IFSEditable, IFSInfo, IFileInfo, IPathInfo, ITopPathInfo } from '~/services/fs/types'
-import type { IFilesStoreData }                                                    from '~/shared/stores/files'
 
 import { apiService }      from '~/services/api'
 import { fsClientService } from '~/services/fs/client.service'

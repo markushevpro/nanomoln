@@ -1,11 +1,11 @@
-import type { loader }   from './loader'
-import type {  IConfig } from '~/services/config'
+import type { loader }  from './loader'
+import type { IConfig } from '~/services/config/types'
 
 import { useLoaderData }      from '@remix-run/react'
 import { useEffect, useMemo } from 'react'
 
+import { useFilesStoreActions } from '~/services/files/store'
 import { useErrorStoreActions } from '~/shared/stores/error'
-import { useFilesStoreActions } from '~/shared/stores/files'
 
 interface IUseFolderDataResult
 {

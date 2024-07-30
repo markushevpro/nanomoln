@@ -830,10 +830,10 @@
   resolved "https://registry.yarnpkg.com/@mantine/store/-/store-7.10.1.tgz#b8201cb0b76bd3feaeecc3818155f06d967e46f4"
   integrity sha512-KrGBsSoMsfrYeLxPwf5rFv0s2Nl/4wf+AaF/U1SpQrMgPI8vYokPXx52Wp3jCmlo12NCZnCIG+/6YHAdTWH1qQ==
 
-"@markushevpro/eslint-config@^2.0.15":
-  version "2.0.15"
-  resolved "https://registry.yarnpkg.com/@markushevpro/eslint-config/-/eslint-config-2.0.15.tgz#98eb2b65da54babaaad4893fcea8820cc7cdbd4b"
-  integrity sha512-gbXvEVm258lGKnHASJDa6B9B1f4+r5ADxhZdCyvo7WatZ5qlNoBkEgbcFFd67qWb27FN+g2im9q4dAIMMAxIPQ==
+"@markushevpro/eslint-config@^2.0.16":
+  version "2.0.16"
+  resolved "https://registry.yarnpkg.com/@markushevpro/eslint-config/-/eslint-config-2.0.16.tgz#549c9a00824fc41951a06be03229a280377bbf8d"
+  integrity sha512-Vl81TdB/cwg4HJURqx1n4wnZiFDVB+bmEVGI354SmnMe0SwuvxLWJGOnAfKuhhGWMv5a1bSafaELuQfANdN/Fw==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^7.7.0"
     "@typescript-eslint/parser" "^7.7.0"

@@ -2,7 +2,7 @@ import type { IListItem } from '~/shared/ui-kit/List/types'
 
 import { useState, useEffect, useMemo } from 'react'
 
-import { useFilesStoreData } from '~/shared/stores/files'
+import { useFilesStoreData } from '~/services/files/store'
 
 import { formatList } from './helpers'
 

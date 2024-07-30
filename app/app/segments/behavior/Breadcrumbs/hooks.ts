@@ -2,7 +2,7 @@ import type { IBreadcrumb } from './types'
 
 import { useState, useEffect, useMemo } from 'react'
 
-import { useFilesStoreData } from '~/shared/stores/files'
+import { useFilesStoreData } from '~/services/files/store'
 
 import { extractActive, extractParents } from './helpers'
 

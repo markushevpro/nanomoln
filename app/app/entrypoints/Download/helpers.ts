@@ -1,5 +1,3 @@
-import fs from 'fs'
-
 import { configService } from '~/services/config'
 import { hashService }   from '~/services/hash'
 import { universalPath } from '~/shared/lib/utils/path'
@@ -12,9 +10,7 @@ function pathIsAllowed
         return false
     }
 
-    const { config } = configService.get()
-    const paths      = config?.paths ?? []
-
+    const paths   = configService.getPaths()
     const allowed = paths?.some(( top ) => hashService.get( top ) === hash )
 
     return allowed
@@ -28,31 +24,12 @@ function getPathFromHash
         return
     }
 
-    const { config } = configService.get()
-    const paths      = config?.paths ?? []
-
-    const top = paths.find(( top ) => hashService.get( top ) === hash )
+    const paths = configService.getPaths()
+    const top   = paths.find(( top ) => hashService.get( top ) === hash )
 
     if ( !top ) {
         return
     }
 
     return universalPath( `${top}/${file}` )
-}
-
-export
-function createSymlink
-( path: string, file: string ): void
-{
-    const dest = `${process.cwd()}/public/tmp`
-
-    if ( !fs.existsSync( dest )) {
-        fs.mkdirSync( dest )
-    }
-
-    const destFile = `${dest}${file}`
-
-    if ( !fs.existsSync( destFile )) {
-        fs.symlinkSync( path, destFile, 'file' )
-    }
 }

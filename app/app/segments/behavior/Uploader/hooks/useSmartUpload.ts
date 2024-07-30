@@ -2,8 +2,8 @@ import type { FileWithPath } from '@mantine/dropzone'
 
 import { useCallback, useContext, useMemo } from 'react'
 
-import { DEFAULT_MAX_SIZE } from '~/services/config/consts'
 import { ConfigContext }    from '~/services/config/context'
+import { getMaxSize }       from '~/services/config/helpers'
 import { useFilesHandlers } from '~/services/folder/hooks/useFilesHandlers'
 import { useFolder }        from '~/services/folder/hooks/useFolder'
 
@@ -76,7 +76,8 @@ function useSmartUpload
 
     const checkSizes = useCallback(
         ( files: FileWithPath[], success: ( filtered: File[]) => void ) => {
-            const overweight = files.filter( f => f.size > ( config?.maxsize ?? DEFAULT_MAX_SIZE ))
+            const maxsize    = getMaxSize( config, folder?.path )
+            const overweight = files.filter( f => f.size > maxsize )
             const filtered   = files.filter( f => !overweight.includes( f ))
             const max        = overweight.reduce(( m, f ) => Math.max( m, f.size ), -Infinity )
 
@@ -93,7 +94,7 @@ function useSmartUpload
                 success( filtered )
             }
         },
-        []
+        [ folder, config, confirmOverweight ]
     )
 
     const handleUpload = useCallback(

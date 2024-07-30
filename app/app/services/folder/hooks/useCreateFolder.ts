@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { useFilesStoreData, useFilesStoreActions } from '~/shared/stores/files'
+import { useFilesStoreData, useFilesStoreActions } from '~/services/files/store'
 
 import { createFolderIn } from './helpers'
 

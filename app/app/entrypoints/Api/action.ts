@@ -4,6 +4,8 @@ import { generateErrorProps }                              from '~/services/erro
 import { folderApi }                                       from '~/services/server/folder'
 import { getApiPath, getTopLevel, getPathWithoutTopLevel } from '~/services/url'
 
+import { extractRequestData } from './helpers'
+
 export
 async function action
 ({ request }: ActionFunctionArgs ): Promise<unknown>
@@ -16,9 +18,8 @@ async function action
 
     const topLevel = getTopLevel( path )
     const all      = getPathWithoutTopLevel( path )
-    const split    = all.split( '?' )
-    const action   = split[ 0 ]
-    const query    = new URLSearchParams( split[ 1 ])
+
+    const { action, query } = extractRequestData( all )
 
     switch ( topLevel?.toLocaleLowerCase()) {
         case 'folders':

@@ -6,11 +6,12 @@ import { IconQuestionMark, IconX } from '@tabler/icons-react'
 interface IRejectContentProps
 {
     unknown: boolean
+    mimes: string[]
 }
 
 export
 function RejectContent
-({ unknown }: IRejectContentProps ): ReactNode
+({ unknown, mimes }: IRejectContentProps ): ReactNode
 {
     return (
         <Group
@@ -47,16 +48,22 @@ function RejectContent
                 {
                     unknown
                         ? 'Warning: Unknown file format'
-                        : 'Unsupported file format'
+                        : 'Not allowed file format'
                 }
 
-                {/*
+                {
                     mimes.length > 0 && (
-                        <span style={{ fontSize: '0.5em' }}>
-                            { `${mimes.map( mime => `"${mime}` ).join( ', ' )} is not allowed to upload`}
+                        <span
+                            style={{
+                                marginTop: '1em',
+                                fontSize:  '0.5em',
+                                display:   'block'
+                            }}
+                        >
+                            { `Files with types ${mimes.map( mime => `"${mime}"` ).join( ', ' )} are not allowed to upload`}
                         </span>
                     )
-                */}
+                }
             </Text>
         </Group>
     )
