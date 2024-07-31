@@ -20,8 +20,8 @@ function Uploader
 {
     const openRef = useRef<() => void>( null )
 
-    const { data: folder } = useFolder()
-    const { upload }       = useSmartUpload()
+    const { data: folder }     = useFolder()
+    const { upload, rejected } = useSmartUpload()
 
     const config = useContext( ConfigContext )
     const accept = getAccept( config, folder?.path ) ?? { accept: [ '*' ] }
@@ -40,16 +40,30 @@ function Uploader
         []
     )
 
-    // Dirty hack, in case of bug - if user drops an empty folder, dropzone locks whole screen
-    const checkEmptyDrop = useCallback(
+    const checkDrop = useCallback(
         ( accept: File[], reject: FileRejection[]) =>
         {
             clearDrag()
+
+            // Dirty hack, in case of bug - if user drops an empty folder, dropzone locks whole screen
             if ( accept.length === 0 && reject.length === 0 ) {
                 reset()
             }
+
+            if ( reject.length > 0 ) {
+                rejected( reject, () => {
+                    if ( accept.length > 0 ) {
+                        // Confirmation popup is hiding at this moment, so we need to wait for it
+                        setTimeout(() => {
+                            upload( accept )
+                        }, 100 )
+                    }
+                })
+            } else if ( accept.length > 0 ) {
+                upload( accept )
+            }
         },
-        [ reset ]
+        [ reset, rejected, upload ]
     )
 
     const isRejected = useCallback(
@@ -77,6 +91,10 @@ function Uploader
         $unknown( false )
     }
 
+    // Another dirty hack due Dropzone not allowing empty onDrop
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const ignore = useCallback(( files: File[] | undefined ) => {}, [])
+
     return (
         <>
             {
@@ -88,8 +106,8 @@ function Uploader
                         openRef={openRef}
                         onDragEnter={checkDrag}
                         onDragLeave={clearDrag}
-                        onDrop={upload}
-                        onDropAny={checkEmptyDrop}
+                        onDrop={ignore}
+                        onDropAny={checkDrop}
                     >
                         <Dropzone.Accept>
                             <AcceptContent />

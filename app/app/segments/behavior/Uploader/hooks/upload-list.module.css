@@ -7,11 +7,17 @@
     padding: 0;
 }
 
+.item > small {
+    display: block;
+    opacity: .7;
+    margin-top: -.5em;
+}
+
 .wrapper {
     display: inline-block;
     white-space: nowrap;
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 1;
+    line-height: 1.5;
 }

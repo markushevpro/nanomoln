@@ -1,4 +1,4 @@
-import type { FileWithPath } from '@mantine/dropzone'
+import type { FileRejection, FileWithPath } from '@mantine/dropzone'
 
 import { useCallback, useContext, useMemo } from 'react'
 
@@ -11,10 +11,12 @@ import { getFilesIntersection } from '../helpers'
 
 import { useOverweightConfirmation } from './useOverweightConfirmation'
 import { useOverwriteConfirmation }  from './useOverwriteConfirmation'
+import { useRejectedConfirmation }   from './useRejectedConfirmation'
 
 interface IUseSmartUploadResult
 {
     upload: ( files: FileWithPath[]) => void
+    rejected: ( rejected: FileRejection[], success?: () => void ) => void
 }
 
 export
@@ -23,10 +25,12 @@ function useSmartUpload
 {
     const config = useContext( ConfigContext )
 
-    const { data: folder }                                     = useFolder()
-    const { upload }                                           = useFilesHandlers()
+    const { data: folder } = useFolder()
+    const { upload }       = useFilesHandlers()
+
     const { confirm: confirmOverwrite, hide: hideOverwrite }   = useOverwriteConfirmation()
     const { confirm: confirmOverweight, hide: hideOverweight } = useOverweightConfirmation()
+    const { confirm: rejected }                                = useRejectedConfirmation()
 
     const uploadAll = useCallback(
         ( files: File[]) => () => {
@@ -109,5 +113,8 @@ function useSmartUpload
         [ folder, checkSizes, checkOverwrite, hideOverweight ]
     )
 
-    return useMemo(() => ({ upload: handleUpload }), [ handleUpload ])
+    return useMemo(() => ({
+        upload: handleUpload,
+        rejected
+    }), [ handleUpload, rejected ])
 }

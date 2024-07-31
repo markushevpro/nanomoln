@@ -6,7 +6,7 @@ import { useCallback, useMemo } from 'react'
 
 import { useConfirmationPopup } from '~/shared/popups/Confirmation'
 
-interface IOverwritePayload
+interface IOverweightPayload
 {
     overweight: File[]
     other: File[] | undefined
@@ -15,7 +15,7 @@ interface IOverwritePayload
 }
 
 function OverweightContent
-({ overweight, other, max }: Pick<IOverwritePayload, 'overweight' | 'other' | 'max'> ): ReactNode
+({ overweight, other, max }: Pick<IOverweightPayload, 'overweight' | 'other' | 'max'> ): ReactNode
 {
     return (
         <>
@@ -42,7 +42,7 @@ function OverweightContent
 }
 
 function OverweightButtons
-({ other, onUpload }: Pick<IOverwritePayload, 'other' | 'onUpload'> ): ReactNode
+({ other, onUpload }: Pick<IOverweightPayload, 'other' | 'onUpload'> ): ReactNode
 {
     const { hide } = useConfirmationPopup()
 
@@ -63,7 +63,7 @@ function OverweightButtons
     )
 }
 
-interface IOverwriteResult
+interface IOverweightResult
 {
     confirm: ( overweight: File[] | undefined, other: File[] | undefined, max: number, onUpload: () => void ) => void
     hide: () => void
@@ -71,7 +71,7 @@ interface IOverwriteResult
 
 export
 function useOverweightConfirmation
-(): IOverwriteResult
+(): IOverweightResult
 {
     const { show, hide } = useConfirmationPopup()
 

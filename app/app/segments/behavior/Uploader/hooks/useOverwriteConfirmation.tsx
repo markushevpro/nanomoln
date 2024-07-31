@@ -5,9 +5,9 @@ import { useCallback, useMemo } from 'react'
 
 import { useConfirmationPopup } from '~/shared/popups/Confirmation'
 
-import styles from './upload-list.module.css'
+import { cutList } from '../helpers'
 
-const maxFilesShowing = 10
+import styles from './upload-list.module.css'
 
 interface IOverwritePayload
 {
@@ -20,7 +20,7 @@ interface IOverwritePayload
 function OverwriteContent
 ({ intersection }: Pick<IOverwritePayload, 'intersection'> ): ReactNode
 {
-    const cut = intersection.length > maxFilesShowing ? intersection.slice( 0, maxFilesShowing ) : intersection
+    const { show, more } = cutList( intersection )
 
     return (
         <>
@@ -28,7 +28,7 @@ function OverwriteContent
 
             <ul className={styles.list}>
                 {
-                    cut.map( file => (
+                    show.map( file => (
                         <li key={file.name} className={styles.item} title={file.name}>
                             <span className={styles.wrapper}>
                                 { file.name }
@@ -39,8 +39,8 @@ function OverwriteContent
             </ul>
 
             {
-                cut.length < intersection.length && (
-                    <p><strong>And {intersection.length - cut.length} more</strong></p>
+                more > 0 && (
+                    <p><strong>And {more} more</strong></p>
                 )
             }
         </>
