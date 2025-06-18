@@ -1,0 +1,24 @@
+{
+    "version": 2,
+    "host": "127.0.0.1",
+    "port": "3000",
+    "global": {
+        "maxsize": 30000000,
+        "accept": {
+            "application/x-zip-compressed": [ ".zip" ]
+        }
+    },
+    "paths": {
+        "d:/archive/library/music": {
+            "accept": {
+                "audio/mpeg": [ ".mp3" ]
+            }
+        },
+        "d:/_tmp": {
+            "maxsize": 3000000000,
+            "accept": {
+                "application/java-archive": [ ".jar" ]
+            }
+        }
+    }
+}

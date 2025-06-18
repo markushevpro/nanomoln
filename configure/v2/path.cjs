@@ -1,53 +1,62 @@
 const fs = require( 'fs' )
 
 const { ask, log, select, confirm } = require( '../cli.cjs' )
+
+const { defineList }  = require( './helpers.cjs' )
 const { defineMimes } = require( './mimes.cjs' )
-const { defineList } = require( './helpers.cjs' )
 
 module.exports = {
     definePathConfig,
     definePaths
 }
 
-async function definePathConfig( cfg, prefix, allowEmpty )
+async function definePathConfig
+( cfg, prefix, allowEmpty )
 {
     await defineMaxSize( cfg, prefix )
     await defineMimes( cfg, prefix, allowEmpty )
 }
 
-async function defineMaxSize ( cfg, _prefix )
+async function defineMaxSize
+( cfg, _prefix )
 {
-    const prefix = _prefix ? `[ ${_prefix} ] `: ''
-    const maxsize = await ask( 
-        `${prefix}Maximum allowed file size for upload in bytes (default, can be customized for specific paths)? (current: "${cfg.maxsize}"):` 
+    const prefix  = _prefix ? `[ ${_prefix} ] ` : ''
+    const maxsize = await ask(
+        `${prefix}Maximum allowed file size for upload in bytes (default, can be customized for specific paths)? (current: "${cfg.maxsize}"):`
     )
 
     cfg.maxsize = +maxsize || cfg.maxsize
 }
 
-async function definePaths ( config )
+async function definePaths
+( config )
 {
-    await defineList( 
-        '', 
-        config, 
-        'paths', 
-        'path', 
-        'paths', 
-        ( path ) => Object.keys( path ), 
-        { add: addPath, update: updatePaths, remove: removePaths },
-        false 
+    await defineList(
+        '',
+        config,
+        'paths',
+        'path',
+        'paths',
+        ( path ) => Object.keys( path ),
+        {
+            add:    addPath,
+            update: updatePaths,
+            remove: removePaths
+        },
+        false
     )
 }
 
-async function addPath ( cfg, def )
+async function addPath
+( cfg, def )
 {
     const res = {
-        accept: {},
+        accept:  {},
         maxsize: cfg.global.maxsize
     }
 
-    const path = ( await ask( `Type full path to directory:`, def )).replace( /\\+/g, '/' )
-    
+    const path = ( await ask( 'Type full path to directory:', def )).replace( /\\+/g, '/' )
+
     if ( path ) {
         if ( fs.existsSync( path )) {
             cfg.paths[ path ] = res
@@ -62,12 +71,14 @@ async function addPath ( cfg, def )
     }
 }
 
-async function updatePaths ( cfg )
+async function updatePaths
+( cfg )
 {
     await selectPath( cfg, updatePath )
 }
 
-async function updatePath ( cfg, key )
+async function updatePath
+( cfg, key )
 {
     await definePathConfig( cfg.paths[ key ], key, true )
 
@@ -76,34 +87,38 @@ async function updatePath ( cfg, key )
     }
 }
 
-async function removePaths ( cfg )
+async function removePaths
+( cfg )
 {
     await selectPath( cfg, removePath )
 }
 
-async function removePath ( cfg, path )
+async function removePath
+( cfg, path )
 {
-    if ( await confirm({ message: `Are you sure to remove "${path}"?`, default: false })) {
+    if ( await confirm({
+        message: `Are you sure to remove "${path}"?`,
+        default: false
+    })) {
         delete cfg.paths[ path ]
     }
 }
 
-async function selectPath ( cfg, handler )
+async function selectPath
+( cfg, handler )
 {
     const paths = Object.keys( cfg.paths ).map( key => ({
-        name: key,
+        name:  key,
         value: key
     }))
 
-    paths.push({
-        name: 'Go back'
-    })
+    paths.push({ name: 'Go back' })
 
     const answer = await select({
         message: 'Select path:',
         choices: paths
     })
-    
+
     if ( answer ) {
         await handler( cfg, answer )
     }

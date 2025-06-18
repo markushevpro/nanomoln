@@ -1,0 +1,127 @@
+import { Button }               from '@mantine/core'
+import { useCallback, useMemo } from 'react'
+
+import { cutList } from '@/segments/behavior/Uploader/helpers'
+
+import type { ReactNode } from 'react'
+
+import styles from './upload-list.module.css'
+
+import { useConfirmationPopup } from '~/shared/popups/Confirmation'
+
+interface IOverwritePayload
+{
+    intersection: File[]
+    rest?: File[]
+    onOverwrite: () => void
+    onIgnore: () => void
+}
+
+function OverwriteContent
+({ intersection }: Pick<IOverwritePayload, 'intersection'> ): ReactNode
+{
+    const { show, more } = cutList( intersection )
+
+    return (
+        <>
+            <p>This files will be overwritten:</p>
+
+            <ul className={styles.list}>
+                {
+                    show.map( file => (
+                        <li key={file.name} className={styles.item} title={file.name}>
+                            <span className={styles.wrapper}>
+                                { file.name }
+                            </span>
+                        </li>
+                    ))
+                }
+            </ul>
+
+            {
+                more > 0 && (
+                    <p>
+                        <strong>
+                            And
+                            {more}
+                            {' '}
+                            more
+                        </strong>
+                    </p>
+                )
+            }
+        </>
+    )
+}
+
+function OverwriteButtons
+({ intersection, rest, onOverwrite, onIgnore }: IOverwritePayload ): ReactNode
+{
+    const { hide } = useConfirmationPopup()
+
+    return (
+        <>
+            <Button style={{ marginRight: 'auto' }} variant="subtle" onClick={hide}>
+                Cancel upload
+            </Button>
+
+            <Button color="red" onClick={onOverwrite}>
+                {
+                intersection.length > 1
+                    ? 'Overwrite all'
+                    : 'Overwrite'
+                }
+            </Button>
+
+            {
+                ( intersection.length > 1 && ( rest && rest.length > 0 )) && (
+                    <Button onClick={onIgnore}>
+                        Ignore exist
+                    </Button>
+                )
+            }
+        </>
+    )
+}
+
+interface IOverwriteResult
+{
+    confirm: ( intersection: File[] | undefined, rest: File[] | undefined, onOverwrite: () => void, onIgnore: () => void ) => void
+    hide: () => void
+}
+
+export
+function useOverwriteConfirmation
+(): IOverwriteResult
+{
+    const { show, hide } = useConfirmationPopup()
+
+    const confirm = useCallback(
+        ( intersection: File[] | undefined, rest: File[] | undefined, onOverwrite: () => void, onIgnore: () => void ) =>
+        {
+            if ( intersection && intersection.length > 0 ) {
+                show(
+                    'Files already exist',
+                    <OverwriteContent intersection={intersection} />,
+                    <OverwriteButtons
+                        intersection={intersection}
+                        rest={rest}
+                        onIgnore={onIgnore}
+                        onOverwrite={onOverwrite}
+                    />
+                )
+            } else {
+                console.error( 'Trying to show empty overwrite confirmation' )
+            }
+        },
+        [ show ]
+    )
+
+    return useMemo(
+        () => ({
+            confirm,
+            hide
+        }),
+        [ confirm, hide ]
+    )
+}

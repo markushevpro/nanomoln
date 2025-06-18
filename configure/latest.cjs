@@ -1,5 +1,3 @@
-const { configure } = require('./v2/index.cjs' )
+const { configure } = require( './v2/index.cjs' )
 
-module.exports = {
-    configure
-}
+module.exports = { configure }

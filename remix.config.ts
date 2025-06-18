@@ -1,6 +1,7 @@
 /* eslint-disable import/no-default-export */
 /** @type {import('@remix-run/dev').AppConfig} */
-export default {
+export default
+{
     ignoredRouteFiles: [ '**/.*' ],
     postcss:           true
     // appDirectory: "app",

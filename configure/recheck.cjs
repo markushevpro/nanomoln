@@ -1,13 +1,12 @@
 const { log, confirm } = require( './cli.cjs' )
 
-module.exports = {
-    recheck
-}
+module.exports = { recheck }
 
-async function recheck ( config )
+async function recheck
+( config )
 {
-    log( `\nLet's check thats everything ok with your config.` )
-    log(JSON.stringify( config, undefined, 2 ))
+    log( '\nLet\'s check thats everything ok with your config.' )
+    log( JSON.stringify( config, undefined, 2 ))
 
     return await confirm({ message: 'Is config ok?' })
 }

@@ -1,5 +1,5 @@
 {
-  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "isolatedModules": true,
@@ -10,12 +10,13 @@
     "target": "ES2022",
     "strict": true,
     "allowJs": true,
+    "checkJs": false,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./app/app/*"],
-      "@/*": ["./app/*"]
+      "~/*": ["./app/*"],
+      "@/*": ["./app/@/*"]
     },
 
     // Remix takes care of building everything in `remix build`.

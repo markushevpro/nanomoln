@@ -1,12 +1,14 @@
-const fs = require('fs')
+const fs = require( 'fs' )
 
-function loadConfig ()
+function loadConfig
+()
 {
     const defaultConfig = JSON.parse( fs.readFileSync( './config.json' ))
     return { ...defaultConfig }
 }
 
-function saveConfig ( data )
+function saveConfig
+( data )
 {
     fs.writeFileSync( './config.json', JSON.stringify( data, undefined, 4 ))
 }

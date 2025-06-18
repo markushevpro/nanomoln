@@ -1,1 +1,2 @@
-export { action } from '~/entrypoints/Api'
+export
+{ action } from '~/entrypoints/Api'

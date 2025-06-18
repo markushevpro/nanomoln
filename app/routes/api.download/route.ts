@@ -1,1 +1,2 @@
-export { loader } from '~/entrypoints/Download'
+export
+{ loader } from '~/entrypoints/Download'

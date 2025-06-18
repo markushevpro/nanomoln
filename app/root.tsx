@@ -1,5 +1,3 @@
-import type { LinkDescriptor } from '@remix-run/node'
-
 import { ColorSchemeScript, MantineProvider } from '@mantine/core'
 import '@mantine/core/styles.css'
 import '@mantine/dropzone/styles.css'
@@ -14,6 +12,8 @@ import {
     Scripts,
     ScrollRestoration
 } from '@remix-run/react'
+
+import type { LinkDescriptor } from '@remix-run/node'
 
 import '~/shared/styles/global.css'
 // eslint-disable-next-line import/order

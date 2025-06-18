@@ -1,27 +1,32 @@
-const { defineList, askExtentions } = require('./helpers.cjs' )
 const { log, ask, select, confirm } = require( '../cli.cjs' )
 
-module.exports = {
-    defineMimes
-}
+const { defineList, askExtentions } = require( './helpers.cjs' )
 
-async function defineMimes ( cfg, prefix, allowEmpty )
+module.exports = { defineMimes }
+
+async function defineMimes
+( cfg, prefix, allowEmpty )
 {
-    await defineList( 
-        prefix, 
-        cfg, 
-        'accept', 
-        'mime-type', 
-        'mime-types', 
-        undefined, 
-        { add: addMime, update: updateMimes, remove: removeMimes }, 
+    await defineList(
+        prefix,
+        cfg,
+        'accept',
+        'mime-type',
+        'mime-types',
+        undefined,
+        {
+            add:    addMime,
+            update: updateMimes,
+            remove: removeMimes
+        },
         allowEmpty
     )
 }
 
-async function addMime ( cfg )
+async function addMime
+( cfg )
 {
-    const mime = await ask( `Provide a mime-type you want to allow:` )
+    const mime = await ask( 'Provide a mime-type you want to allow:' )
 
     if ( mime ) {
         if ( cfg.accept[ mime.toLocaleLowerCase() ]) {
@@ -33,44 +38,50 @@ async function addMime ( cfg )
     }
 }
 
-async function updateMimes ( cfg )
+async function updateMimes
+( cfg )
 {
     await selectMime( cfg, updateMime )
 }
 
-async function updateMime ( cfg, key )
+async function updateMime
+( cfg, key )
 {
-    cfg.accept[ key ] = await askExtentions( cfg.accept[ key] )
+    cfg.accept[ key ] = await askExtentions( cfg.accept[ key ])
 }
 
-async function removeMimes ( cfg )
+async function removeMimes
+( cfg )
 {
     await selectMime( cfg, removeMime )
 }
 
-async function removeMime ( cfg, mime )
+async function removeMime
+( cfg, mime )
 {
-    if ( await confirm({ message: `Are you sure to remove "${mime}"?`, default: false })) {
+    if ( await confirm({
+        message: `Are you sure to remove "${mime}"?`,
+        default: false
+    })) {
         delete cfg.accept[ mime ]
     }
 }
 
-async function selectMime ( cfg, handler )
+async function selectMime
+( cfg, handler )
 {
     const mimes = Object.keys( cfg.accept ).map( key => ({
-        name: key,
+        name:  key,
         value: key
     }))
 
-    mimes.push({
-        name: 'Go back'
-    })
+    mimes.push({ name: 'Go back' })
 
     const answer = await select({
         message: 'Select mime type:',
         choices: mimes
     })
-    
+
     if ( answer ) {
         await handler( cfg, answer )
     }

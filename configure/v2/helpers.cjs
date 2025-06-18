@@ -1,18 +1,19 @@
-const { log, select, ask } = require('../cli.cjs' )
+const { log, select, ask } = require( '../cli.cjs' )
 
 module.exports = {
     defineList,
     askExtentions
 }
 
-async function defineList( _prefix, cfg, key, single, plural, format, handlers, allowEmpty )
+async function defineList
+( _prefix, cfg, key, single, plural, format, handlers, allowEmpty )
 {
     const prefix = _prefix ? `[ ${_prefix} ] ` : ''
-    const keys = Object.keys( cfg[ key ] )
- 
+    const keys   = Object.keys( cfg[ key ])
+
     const choices = [
         {
-            name: `Add new ${single}`,
+            name:  `Add new ${single}`,
             value: 'add'
         }
     ]
@@ -25,12 +26,12 @@ async function defineList( _prefix, cfg, key, single, plural, format, handlers, 
         listKeysAndValues( cfg[ key ], format )
 
         choices.push({
-            name: `Update a ${single}`,
+            name:  `Update a ${single}`,
             value: 'update'
         })
 
         choices.push({
-            name: `Remove a ${single}`,
+            name:  `Remove a ${single}`,
             value: 'remove'
         })
     } else {
@@ -41,7 +42,7 @@ async function defineList( _prefix, cfg, key, single, plural, format, handlers, 
 
     if ( keys.length > 0 || allowEmpty ) {
         choices.push({
-            name: 'Keep as is, go further',
+            name:  'Keep as is, go further',
             value: 'skip'
         })
     }
@@ -51,7 +52,7 @@ async function defineList( _prefix, cfg, key, single, plural, format, handlers, 
         choices
     })
 
-    switch ( action ){
+    switch ( action ) {
         case 'add':
             await handlers.add( cfg )
             await defineList( prefix, cfg, key, single, plural, format, handlers, allowEmpty )
@@ -72,18 +73,20 @@ async function defineList( _prefix, cfg, key, single, plural, format, handlers, 
     }
 }
 
-async function listKeysAndValues ( obj, _format )
+async function listKeysAndValues
+( obj, _format )
 {
-    const keys = Object.keys( obj )
+    const keys   = Object.keys( obj )
     const format = _format ?? ( val => val )
 
     log(
-        `\n${keys.map( key => `- ${key}: [${format( obj[ key ] ).join( ', ' )}]` ).join('\n')}\n`
+        `\n${keys.map( key => `- ${key}: [${format( obj[ key ]).join( ', ' )}]` ).join( '\n' )}\n`
     )
 }
 
-async function askExtentions ( def )
+async function askExtentions
+( def )
 {
-    const exts = await ask( `Type a list of extentions you allow for this mime type (ex. .html, .png):`, def )
+    const exts = await ask( 'Type a list of extentions you allow for this mime type (ex. .html, .png):', def )
     return exts.split( ',' ).map( ext => `.${ext.trim().toLowerCase()}`.replace( /^\.+/, '.' ))
 }
